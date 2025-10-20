@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createServerClient } from '@/lib/supabase/server';
-import { analyzeCreative } from '@/lib/ai/openai-analyze';
+// Use mock AI for now to get deployment working
+import { analyzeCreative } from '@/lib/ai/analyze';
 
 export async function POST(request: Request) {
   try {
