@@ -8,10 +8,6 @@ const nextConfig = {
       },
     ],
   },
-  // Skip build-time static generation for dynamic pages
-  experimental: {
-    runtime: 'nodejs',
-  },
   output: 'standalone',
 };
 
