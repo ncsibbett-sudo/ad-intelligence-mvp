@@ -17,7 +17,8 @@
       "Bash(del \"C:\\Users\\ncsib\\460R\\MarketingApp\\middleware.ts\")",
       "Bash(git init:*)",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(git push:*)"
     ],
     "deny": [],
     "ask": []

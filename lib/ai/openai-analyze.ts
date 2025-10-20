@@ -1,9 +1,12 @@
 import OpenAI from 'openai';
 import { AnalysisResult } from '@/lib/types';
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+// Lazy-load OpenAI client to avoid build-time initialization issues
+function getOpenAIClient() {
+  return new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY || 'placeholder',
+  });
+}
 
 /**
  * Real AI Analysis using GPT-4 Vision
@@ -38,6 +41,7 @@ Be specific, actionable, and focus on what drives performance.`
     ];
 
     // Call OpenAI API
+    const openai = getOpenAIClient();
     const response = await openai.chat.completions.create({
       model: imageUrl ? 'gpt-4-vision-preview' : 'gpt-4-turbo-preview',
       messages,
