@@ -18,9 +18,12 @@ export async function POST(request: Request) {
 
     // Create a Supabase client with the user's token for RLS
     const { createClient } = await import('@supabase/supabase-js');
+    const supabaseUrl = 'https://utmnwtxtwxfymrcyrgqr.supabase.co';
+    const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV0bW53dHh0d3hmeW1yY3lyZ3FyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjAwOTg5MTksImV4cCI6MjA3NTY3NDkxOX0.k_veXnDKq5vWZC32OZkuf7-A2fGqDuJMYezZnaav3m8';
+
     const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      supabaseUrl,
+      supabaseAnonKey,
       {
         global: {
           headers: {
@@ -33,8 +36,15 @@ export async function POST(request: Request) {
     // Verify the token and get the user
     const { data: { user }, error: authError } = await supabase.auth.getUser(token);
     if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      console.error('Auth error in Stripe checkout:', authError);
+      console.error('Token received:', token?.substring(0, 20) + '...');
+      return NextResponse.json({
+        error: 'Unauthorized',
+        details: authError?.message || 'User not found'
+      }, { status: 401 });
     }
+
+    console.log('Stripe checkout - User authenticated:', user.id);
 
     // Get or create user profile and Stripe customer
     let { data: userData } = await supabase
