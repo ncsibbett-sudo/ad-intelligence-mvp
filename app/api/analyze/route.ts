@@ -69,6 +69,11 @@ export async function POST(request: Request) {
     }
 
     // At this point userData is guaranteed to be non-null
+    // TypeScript still needs help understanding this, so we assert it's not null
+    if (!userData) {
+      return NextResponse.json({ error: 'Failed to load user data' }, { status: 500 });
+    }
+
     // Check if user has reached free tier limit
     if (userData.payment_status === 'free' && userData.analysis_count >= 5) {
       return NextResponse.json({
