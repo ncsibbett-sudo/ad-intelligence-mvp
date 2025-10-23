@@ -36,11 +36,13 @@ export async function POST(request: Request) {
     }
 
     // Get user's payment status and analysis count
-    let { data: userData, error: userError } = await supabase
+    const { data: userDataResult, error: userError } = await supabase
       .from('users')
       .select('payment_status, analysis_count')
       .eq('id', user.id)
       .single();
+
+    let userData = userDataResult;
 
     // If user profile doesn't exist, create it (in case trigger failed)
     if (userError || !userData) {
@@ -66,8 +68,9 @@ export async function POST(request: Request) {
       userData = newUser;
     }
 
+    // At this point userData is guaranteed to be non-null
     // Check if user has reached free tier limit
-    if (userData!.payment_status === 'free' && userData!.analysis_count >= 5) {
+    if (userData.payment_status === 'free' && userData.analysis_count >= 5) {
       return NextResponse.json({
         error: 'Analysis limit reached',
         message: 'Upgrade to premium for unlimited analyses',
@@ -99,13 +102,13 @@ export async function POST(request: Request) {
     // Increment analysis count
     await supabase
       .from('users')
-      .update({ analysis_count: userData!.analysis_count + 1 })
+      .update({ analysis_count: userData.analysis_count + 1 })
       .eq('id', user.id);
 
     return NextResponse.json({
       analysis,
-      remaining_analyses: userData!.payment_status === 'free'
-        ? 5 - (userData!.analysis_count + 1)
+      remaining_analyses: userData.payment_status === 'free'
+        ? 5 - (userData.analysis_count + 1)
         : null,
     });
   } catch (error) {
