@@ -46,7 +46,7 @@ export async function POST(request: Request) {
     // If user profile doesn't exist, create it (in case trigger failed)
     if (!userData) {
       console.log('User profile not found, creating...', user.id);
-      const { data: newUser } = await supabase
+      const { data: newUser, error: createError } = await supabase
         .from('users')
         .insert({
           id: user.id,
@@ -56,10 +56,23 @@ export async function POST(request: Request) {
         })
         .select()
         .single();
+
+      if (createError || !newUser) {
+        console.error('Failed to create user profile:', createError);
+        return NextResponse.json({
+          error: 'Failed to create user profile. Please try again.'
+        }, { status: 500 });
+      }
+
       userData = newUser;
     }
 
-    let customerId = userData?.stripe_customer_id;
+    // Explicit check for TypeScript
+    if (!userData) {
+      return NextResponse.json({ error: 'Failed to load user data' }, { status: 500 });
+    }
+
+    let customerId = userData.stripe_customer_id;
 
     if (!customerId) {
       const customer = await stripe.customers.create({
