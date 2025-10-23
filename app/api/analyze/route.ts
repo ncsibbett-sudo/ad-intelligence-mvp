@@ -56,7 +56,7 @@ export async function POST(request: Request) {
         .select()
         .single();
 
-      if (createError) {
+      if (createError || !newUser) {
         console.error('Failed to create user profile:', createError);
         return NextResponse.json({
           error: 'Failed to create user profile. Please try again.'
@@ -67,7 +67,7 @@ export async function POST(request: Request) {
     }
 
     // Check if user has reached free tier limit
-    if (userData.payment_status === 'free' && userData.analysis_count >= 5) {
+    if (userData!.payment_status === 'free' && userData!.analysis_count >= 5) {
       return NextResponse.json({
         error: 'Analysis limit reached',
         message: 'Upgrade to premium for unlimited analyses',
@@ -99,13 +99,13 @@ export async function POST(request: Request) {
     // Increment analysis count
     await supabase
       .from('users')
-      .update({ analysis_count: userData.analysis_count + 1 })
+      .update({ analysis_count: userData!.analysis_count + 1 })
       .eq('id', user.id);
 
     return NextResponse.json({
       analysis,
-      remaining_analyses: userData.payment_status === 'free'
-        ? 5 - (userData.analysis_count + 1)
+      remaining_analyses: userData!.payment_status === 'free'
+        ? 5 - (userData!.analysis_count + 1)
         : null,
     });
   } catch (error) {
