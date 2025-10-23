@@ -36,12 +36,28 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Get or create Stripe customer
-    const { data: userData } = await supabase
+    // Get or create user profile and Stripe customer
+    let { data: userData } = await supabase
       .from('users')
       .select('stripe_customer_id')
       .eq('id', user.id)
       .single();
+
+    // If user profile doesn't exist, create it (in case trigger failed)
+    if (!userData) {
+      console.log('User profile not found, creating...', user.id);
+      const { data: newUser } = await supabase
+        .from('users')
+        .insert({
+          id: user.id,
+          email: user.email,
+          payment_status: 'free',
+          analysis_count: 0,
+        })
+        .select()
+        .single();
+      userData = newUser;
+    }
 
     let customerId = userData?.stripe_customer_id;
 

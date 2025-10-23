@@ -36,17 +36,34 @@ export async function POST(request: Request) {
     }
 
     // Get user's payment status and analysis count
-    const { data: userData, error: userError } = await supabase
+    let { data: userData, error: userError } = await supabase
       .from('users')
       .select('payment_status, analysis_count')
       .eq('id', user.id)
       .single();
 
+    // If user profile doesn't exist, create it (in case trigger failed)
     if (userError || !userData) {
-      console.error('User lookup error:', userError, 'User ID:', user.id);
-      return NextResponse.json({
-        error: 'User profile not found. Please contact support.'
-      }, { status: 404 });
+      console.log('User profile not found, creating...', user.id);
+      const { data: newUser, error: createError } = await supabase
+        .from('users')
+        .insert({
+          id: user.id,
+          email: user.email,
+          payment_status: 'free',
+          analysis_count: 0,
+        })
+        .select()
+        .single();
+
+      if (createError) {
+        console.error('Failed to create user profile:', createError);
+        return NextResponse.json({
+          error: 'Failed to create user profile. Please try again.'
+        }, { status: 500 });
+      }
+
+      userData = newUser;
     }
 
     // Check if user has reached free tier limit
