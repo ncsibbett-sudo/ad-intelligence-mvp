@@ -19,7 +19,9 @@
       "Bash(git add:*)",
       "Bash(git commit:*)",
       "Bash(git push:*)",
-      "Bash(git log:*)"
+      "Bash(git log:*)",
+      "Bash(curl -I http://localhost:3000)",
+      "Bash(taskkill //F //PID 14452)"
     ],
     "deny": [],
     "ask": []

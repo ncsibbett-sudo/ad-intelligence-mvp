@@ -246,7 +246,7 @@ export default function DashboardPage() {
                     </p>
                     {analysis && (
                       <Link
-                        href={`/dashboard/analysis/${creative.id}`}
+                        href={`/dashboard/analyze/${creative.id}`}
                         className="text-sm text-blue-600 hover:text-blue-700 font-medium"
                       >
                         View Analysis →
