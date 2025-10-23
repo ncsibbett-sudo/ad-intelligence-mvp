@@ -81,25 +81,40 @@ export default function DashboardPage() {
 
   async function handleUpgrade() {
     try {
+      console.log('Upgrade button clicked');
       // Get the user's session token
       const { data: { session } } = await supabase.auth.getSession();
+      console.log('Session:', session ? 'exists' : 'missing');
+
+      if (!session?.access_token) {
+        alert('Please log in again to continue');
+        router.push('/auth/login');
+        return;
+      }
 
       const response = await fetch('/api/stripe/checkout', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${session?.access_token}`,
+          'Authorization': `Bearer ${session.access_token}`,
         },
       });
       const data = await response.json();
+      console.log('Stripe checkout response:', data);
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to create checkout session');
+      }
 
       if (data.url) {
         window.location.href = data.url;
       } else {
         console.error('No checkout URL returned:', data);
+        alert('Failed to start checkout. Please try again.');
       }
     } catch (error) {
       console.error('Error creating checkout session:', error);
+      alert('Failed to start checkout: ' + (error instanceof Error ? error.message : 'Unknown error'));
     }
   }
 
@@ -177,10 +192,13 @@ export default function DashboardPage() {
             {user?.payment_status === 'free' && (
               <button
                 onClick={handleUpgrade}
-                className="mt-2 text-sm text-blue-600 hover:text-blue-700 font-medium"
+                className="mt-2 text-sm text-blue-600 hover:text-blue-700 font-medium cursor-pointer hover:underline"
               >
                 Upgrade to Pro →
               </button>
+            )}
+            {!user && (
+              <p className="mt-2 text-xs text-gray-500">Loading user info...</p>
             )}
           </div>
         </div>
