@@ -8,6 +8,9 @@ create table public.users (
   stripe_customer_id text,
   payment_status text default 'free' check (payment_status in ('free', 'paid')),
   analysis_count integer default 0,
+  meta_access_token text,
+  meta_token_expires_at timestamp with time zone,
+  meta_ad_account_id text,
   created_at timestamp with time zone default now(),
   updated_at timestamp with time zone default now()
 );
