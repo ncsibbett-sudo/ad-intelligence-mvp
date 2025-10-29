@@ -211,7 +211,13 @@ export default function AnalyzePage({ params }: { params: Promise<{ id: string }
                   {error.includes('Upgrade') && (
                     <button
                       onClick={async () => {
-                        const response = await fetch('/api/stripe/checkout', { method: 'POST' });
+                        const { data: { session } } = await supabase.auth.getSession();
+                        const response = await fetch('/api/stripe/checkout', {
+                          method: 'POST',
+                          headers: {
+                            'Authorization': `Bearer ${session?.access_token}`,
+                          },
+                        });
                         const data = await response.json();
                         if (data.url) window.location.href = data.url;
                       }}
