@@ -32,6 +32,7 @@
 - ✅ AI-powered ad analysis (mock AI for deployment stability)
 - ✅ Freemium tier enforcement (5 free analyses)
 - ✅ Stripe payment integration (test mode)
+- ✅ Stripe webhook processing (automatic payment status updates)
 - ✅ Dashboard with analytics overview
 - ✅ Recent creatives display with analysis status
 - ✅ Responsive design for mobile/desktop
@@ -39,7 +40,6 @@
 ### Known Limitations:
 - Meta Ad Library integration UI exists but OAuth flow not fully implemented
 - Uses mock AI analysis for deployment (OpenAI integration code exists but disabled to avoid API costs)
-- Stripe webhooks require manual testing with Stripe CLI (not automatically processed in production)
 
 ---
 
@@ -92,12 +92,13 @@ lib/
 - ⚠️ **Missing rate limiting**: No API rate limiting implemented
 - ⚠️ **No input validation**: Missing request validation on API routes
 
-#### 3. **Payment Integration** (8/10)
+#### 3. **Payment Integration** (9/10)
 - ✅ **Stripe checkout**: Functional checkout session creation
 - ✅ **Customer management**: Proper Stripe customer creation and tracking
 - ✅ **Freemium model**: 5 free analyses, then paid tier
 - ✅ **Subscription tracking**: Database records payment status
-- ⚠️ **Webhook implementation**: Webhook route exists but needs testing with Stripe CLI
+- ✅ **Webhook implementation**: Fully tested and functional in production with service role key
+- ✅ **Dual upgrade paths**: Both dashboard and error message upgrade flows working
 - ⚠️ **No subscription management UI**: Users can't cancel/manage subscriptions in-app
 
 #### 4. **Database Design** (9/10)
@@ -324,9 +325,9 @@ function ErrorFallback({error}) {
 ### **Post-Assignment Improvements (Priority Order):**
 
 **Week 1 - MVP Hardening:**
-1. Add real AI integration (OpenAI GPT-4 Vision) ← **Currently in progress**
+1. Add real AI integration (OpenAI GPT-4 Vision)
 2. Implement Meta Ad Library API (competitor search)
-3. Complete Stripe webhook testing
+3. ✅ Complete Stripe webhook testing ← **Completed: October 29, 2025**
 4. Add error boundaries and user-friendly error messages
 
 **Week 2 - Quality & Monitoring:**
@@ -395,7 +396,19 @@ During deployment to Vercel, several challenges were encountered and resolved:
 4. **Build Cache Corruption**: Cleared `.next` cache to resolve webpack module errors
 5. **Routing Issues**: Fixed "View Analysis" button linking to correct route
 
-All issues were resolved and the application is now fully functional on Vercel.
+### Post-Assignment Updates (October 29, 2025):
+
+6. **Stripe Webhook RLS Issue**: Webhooks were failing to update database due to Row-Level Security policies
+   - **Root Cause**: Webhook handler was using `SUPABASE_ANON_KEY` which respects RLS, but webhooks come from Stripe servers without user authentication
+   - **Solution**: Changed webhook route to use `SUPABASE_SERVICE_ROLE_KEY` to bypass RLS for server-side webhook processing
+   - **Testing**: Successfully tested locally with Stripe CLI and verified production webhook functionality
+
+7. **Upgrade Button Authentication**: Error message "Upgrade Now" button was failing to redirect to Stripe checkout
+   - **Root Cause**: Button was missing `Authorization` header with user session token
+   - **Solution**: Added session token retrieval and Authorization header to match dashboard implementation
+   - **Result**: Both upgrade paths (dashboard button and error message link) now work correctly
+
+All issues were resolved and the application is now fully functional on Vercel with complete payment flow.
 
 ---
 
