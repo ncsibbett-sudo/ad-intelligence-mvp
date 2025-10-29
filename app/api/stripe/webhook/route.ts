@@ -28,9 +28,10 @@ export async function POST(request: Request) {
   }
 
   try {
+    // Use service role key to bypass RLS (webhooks come from Stripe, not users)
     const supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+      process.env.SUPABASE_SERVICE_ROLE_KEY!
     );
 
     switch (event.type) {
@@ -38,21 +39,32 @@ export async function POST(request: Request) {
         const session = event.data.object as Stripe.Checkout.Session;
         const userId = session.metadata?.supabase_user_id;
 
+        console.log('Webhook: checkout.session.completed received');
+        console.log('User ID from metadata:', userId);
+
         if (userId) {
           // Update user's payment status
-          await supabase
+          const { data: userData, error: userError } = await supabase
             .from('users')
             .update({ payment_status: 'paid' })
-            .eq('id', userId);
+            .eq('id', userId)
+            .select();
+
+          console.log('User update result:', userData, userError);
 
           // Update payment record
-          await supabase
+          const { data: paymentData, error: paymentError } = await supabase
             .from('payments')
             .update({
               status: 'succeeded',
               stripe_payment_intent: session.payment_intent as string,
             })
-            .eq('stripe_session_id', session.id);
+            .eq('stripe_session_id', session.id)
+            .select();
+
+          console.log('Payment update result:', paymentData, paymentError);
+        } else {
+          console.log('No user ID in metadata - skipping database update');
         }
         break;
       }
