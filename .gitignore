@@ -35,3 +35,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# stripe cli
+stripe.exe
+
+# claude code local settings
+.claude/settings.local.json
