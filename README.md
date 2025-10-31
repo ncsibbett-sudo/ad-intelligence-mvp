@@ -2,6 +2,16 @@
 
 A production-ready MVP for analyzing ad creatives and discovering what drives performance. Built with Next.js, Supabase, and Stripe.
 
+🚀 **[Live Demo](https://ad-intelligence-mvp.vercel.app)** | 📚 **[Documentation](./docs)** | 🤝 **[Contributing](./CONTRIBUTING.md)**
+
+## Quick Links
+
+- [API Documentation](./docs/API.md) - Complete API reference
+- [Architecture Guide](./docs/ARCHITECTURE.md) - System design and data flow
+- [Contributing Guide](./CONTRIBUTING.md) - Development workflow
+- [Meta OAuth Setup](./docs/META_OAUTH_SETUP.md) - Meta integration guide
+- [Code Review](./docs/SPRINT3_CODE_REVIEW.md) - Quality assessment
+
 ## Features
 
 - **User Authentication** - Secure signup/login with Supabase Auth
@@ -96,7 +106,7 @@ Open [http://localhost:3000](http://localhost:3000)
 ## Project Structure
 
 ```
-MarketingApp/
+ad-intelligence/
 ├── app/                          # Next.js App Router
 │   ├── api/                      # API routes
 │   │   ├── analyze/              # AI analysis endpoint
@@ -113,22 +123,35 @@ MarketingApp/
 │   ├── globals.css               # Global styles
 │   ├── layout.tsx                # Root layout
 │   └── page.tsx                  # Landing page
-├── components/                   # Reusable UI components (future)
+├── docs/                         # Documentation
+│   ├── API.md                    # API endpoint reference
+│   ├── ARCHITECTURE.md           # System design guide
+│   ├── CLAUDE.md                 # AI assistant instructions
+│   ├── META_OAUTH_SETUP.md       # Meta integration guide
+│   └── SPRINT3_CODE_REVIEW.md    # Code quality assessment
 ├── lib/                          # Core utilities
 │   ├── ai/                       # AI analysis logic
-│   │   └── analyze.ts            # Mock AI (replace with real API)
+│   │   ├── analyze.ts            # Mock AI (currently active)
+│   │   └── openai-analyze.ts     # Real OpenAI integration (ready)
 │   ├── meta/                     # Meta API clients
 │   │   └── client.ts             # Meta Ads & Ad Library clients
 │   ├── supabase/                 # Supabase configuration
 │   │   ├── client.ts             # Browser client
 │   │   ├── server.ts             # Server client
 │   │   └── schema.sql            # Database schema
-│   └── types/                    # TypeScript types
-│       └── index.ts
-├── .env.local.example            # Environment template
-├── next.config.js                # Next.js config
-├── tailwind.config.ts            # Tailwind config
-├── tsconfig.json                 # TypeScript config
+│   └── types.ts                  # TypeScript type definitions
+├── Configuration files
+│   ├── .editorconfig             # Editor consistency
+│   ├── .eslintrc.json            # Linting rules
+│   ├── .gitignore                # Git exclusions
+│   ├── .nvmrc                    # Node version
+│   ├── .prettierrc               # Code formatting
+│   ├── .prettierignore           # Format exclusions
+│   ├── next.config.js            # Next.js config
+│   ├── package.json              # Dependencies & scripts
+│   ├── tailwind.config.ts        # Tailwind config
+│   └── tsconfig.json             # TypeScript config
+├── CONTRIBUTING.md               # Development guidelines
 └── README.md                     # This file
 ```
 
