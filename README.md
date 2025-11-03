@@ -17,7 +17,7 @@ A production-ready MVP for analyzing ad creatives and discovering what drives pe
 - **User Authentication** - Secure signup/login with Supabase Auth
 - **Meta Ads Integration** - Connect Meta ad accounts and import ad creatives
 - **Competitor Analysis** - Search and analyze competitor ads via Meta Ad Library
-- **AI-Powered Analysis** - Extract insights from ad copy, images, CTAs, and emotional tone
+- **Hybrid AI Analysis** - Free tier uses mock AI ($0 cost), Pro tier uses GPT-3.5 Turbo (~$0.002/analysis)
 - **Performance Insights** - Link creative elements to performance metrics
 - **Freemium Model** - Free tier (5 analyses) + Pro subscription via Stripe
 - **Dashboard** - View, manage, and analyze ad creatives
@@ -31,7 +31,7 @@ A production-ready MVP for analyzing ad creatives and discovering what drives pe
 - **Database**: Supabase (PostgreSQL + Auth)
 - **Payments**: Stripe (Checkout + Webhooks)
 - **APIs**: Meta Marketing API, Meta Ad Library API
-- **AI**: Mock analysis (production-ready structure for OpenAI/Claude)
+- **AI**: Hybrid approach - Mock AI (free tier) + GPT-3.5 Turbo (paid tier)
 - **Hosting**: Vercel-ready
 
 ## Prerequisites
@@ -90,6 +90,9 @@ META_ACCESS_TOKEN=your_meta_access_token
 NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=your_stripe_publishable_key
 STRIPE_SECRET_KEY=your_stripe_secret_key
 STRIPE_WEBHOOK_SECRET=your_stripe_webhook_secret
+
+# OpenAI (required for paid tier AI analysis)
+OPENAI_API_KEY=your_openai_api_key
 
 # App
 NEXT_PUBLIC_APP_URL=http://localhost:3000
@@ -171,12 +174,17 @@ ad-intelligence/
 
 ### AI Analysis
 
-Currently uses mock analysis with heuristics. Replace `lib/ai/analyze.ts` with:
-- OpenAI GPT-4 Vision API
-- Anthropic Claude API
-- Custom ML model
+Uses **hybrid AI approach** based on payment tier:
 
-Analysis returns:
+- **Free users**: Mock analysis with heuristics (zero cost)
+- **Paid users**: Real AI with GPT-3.5 Turbo (~$0.002 per analysis)
+
+**Cost Economics:**
+- Free tier: $0 cost until users upgrade
+- Paid tier: 99% profit margin ($29/month revenue, ~$0.002 per analysis)
+- Example: User runs 1,000 analyses/month = $2 cost, $27 profit
+
+**Analysis Output:**
 - Headline length and tone
 - Emotional triggers
 - Visual elements
@@ -242,33 +250,30 @@ Use Stripe test cards:
 - Success: `4242 4242 4242 4242`
 - Decline: `4000 0000 0000 0002`
 
-### Mock vs Real AI
+### Hybrid AI Implementation
 
-Current implementation uses mock AI. To integrate real AI:
+The application uses a **hybrid AI approach** that automatically switches based on payment tier:
 
+**Free Users:** Mock AI analysis (zero cost)
+- Deterministic heuristics-based analysis
+- Instant results with realistic-looking insights
+- No API costs until users upgrade
+
+**Paid Users:** Real AI analysis with GPT-3.5 Turbo (~$0.002 per analysis)
+- 99% profit margin on $29/month subscription
+- Example: 1,000 analyses/month = $2 cost, $27 profit
+
+**Implementation:**
 ```typescript
-// lib/ai/analyze.ts
-import OpenAI from 'openai';
-
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-
-export async function analyzeCreative(imageUrl, adCopy, cta) {
-  const response = await openai.chat.completions.create({
-    model: "gpt-4-vision-preview",
-    messages: [
-      {
-        role: "user",
-        content: [
-          { type: "text", text: "Analyze this ad creative..." },
-          { type: "image_url", image_url: imageUrl }
-        ]
-      }
-    ]
-  });
-
-  return JSON.parse(response.choices[0].message.content);
-}
+// In app/api/analyze/route.ts
+const analysisResult = userData.payment_status === 'paid'
+  ? await openaiAnalyze(image_url, ad_copy, cta)  // Real AI
+  : await mockAnalyze(image_url, ad_copy, cta);   // Mock AI
 ```
+
+**Environment Setup:**
+- Add `OPENAI_API_KEY` to `.env.local` for local testing
+- Add `OPENAI_API_KEY` to Vercel environment variables for production
 
 ### Rate Limiting
 

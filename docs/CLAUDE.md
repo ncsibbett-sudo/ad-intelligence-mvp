@@ -86,13 +86,26 @@ if (!userData) {
 
 ### AI Analysis Architecture
 
-Currently uses **mock AI** (`lib/ai/analyze.ts`) to avoid API costs and ensure deployment stability. The codebase includes commented-out OpenAI integration code (`lib/ai/openai-analyze.ts`) that can be activated by:
+Uses **hybrid AI approach** based on payment tier:
 
-1. Uncommenting imports in `/api/analyze/route.ts`
-2. Setting `OPENAI_API_KEY` environment variable
-3. Changing import from `lib/ai/analyze` to `lib/ai/openai-analyze`
+- **Free users**: Mock AI (`lib/ai/analyze.ts`) - Zero cost
+- **Paid users**: Real AI (`lib/ai/openai-analyze.ts`) - GPT-3.5 Turbo (~$0.002 per analysis)
 
-Mock AI provides realistic-looking analysis results for demo purposes.
+**Cost Structure:**
+- Free tier: $0 cost (mock AI)
+- Pro tier: ~$0.002 per analysis (99% profit margin on $29/month subscription)
+- Example: 1,000 analyses/month = $2 cost, $27 profit per user
+
+**Implementation:**
+```typescript
+// In /api/analyze/route.ts
+const analysisResult = userData.payment_status === 'paid'
+  ? await openaiAnalyze(image_url, ad_copy, cta)
+  : await mockAnalyze(image_url, ad_copy, cta);
+```
+
+**Required Environment Variable:**
+- `OPENAI_API_KEY` - Required for paid tier analysis (add to Vercel for production)
 
 ## File Structure Patterns
 
