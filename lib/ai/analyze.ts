@@ -16,12 +16,19 @@ export async function analyzeCreative(
   const analysis: AnalysisResult = {};
 
   // Analyze headline/copy
+  // FIX: Always provide default values even if ad copy is empty
   if (adCopy) {
     const headline = extractHeadline(adCopy);
     analysis.headline = headline;
     analysis.headline_length = categorizeHeadlineLength(headline);
     analysis.copy_tone = analyzeCopyTone(adCopy);
     analysis.emotion = detectEmotion(adCopy);
+  } else {
+    // Default values for empty ad copy
+    analysis.headline = '[No headline provided]';
+    analysis.headline_length = 'short';
+    analysis.copy_tone = 'informative';
+    analysis.emotion = 'neutral';
   }
 
   // Analyze CTA
@@ -30,9 +37,14 @@ export async function analyzeCreative(
   }
 
   // Analyze visual elements (mock)
+  // FIX: Always provide primary_color even without an image
   if (imageUrl) {
     analysis.primary_color = mockColorAnalysis();
     analysis.visual_elements = mockVisualElements();
+  } else {
+    // Default values for no image
+    analysis.primary_color = 'blue'; // Default brand color
+    analysis.visual_elements = [];
   }
 
   // Generate performance insights
