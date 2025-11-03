@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 import { createServerClient } from '@/lib/supabase/server';
-// Use mock AI for now to get deployment working
-import { analyzeCreative } from '@/lib/ai/analyze';
+// Hybrid AI approach: Mock for free tier ($0 cost), Real AI for paid tier (~$0.002/analysis)
+import { analyzeCreative as mockAnalyze } from '@/lib/ai/analyze';
+import { analyzeCreative as openaiAnalyze } from '@/lib/ai/openai-analyze';
 
 export async function POST(request: Request) {
   try {
@@ -89,8 +90,11 @@ export async function POST(request: Request) {
     const body = await request.json();
     const { creative_id, image_url, ad_copy, cta } = body;
 
-    // Run AI analysis
-    const analysisResult = await analyzeCreative(image_url, ad_copy, cta);
+    // Run AI analysis: Mock for free users ($0), Real AI for paid users (~$0.002)
+    // This ensures zero cost until users pay $29/month, then maintains 99% profit margin
+    const analysisResult = userData.payment_status === 'paid'
+      ? await openaiAnalyze(image_url, ad_copy, cta)
+      : await mockAnalyze(image_url, ad_copy, cta);
 
     // Save analysis to database
     const { data: analysis, error: analysisError } = await supabase

@@ -21,7 +21,8 @@ export async function analyzeCreative(
     // Build the analysis prompt
     const prompt = buildAnalysisPrompt(adCopy, cta);
 
-    // Prepare messages for OpenAI
+    // Prepare messages for OpenAI (text-only for GPT-3.5 Turbo)
+    // Note: GPT-3.5 Turbo doesn't support vision, so we analyze based on ad copy and CTA
     const messages: any[] = [
       {
         role: 'system',
@@ -31,19 +32,15 @@ Be specific, actionable, and focus on what drives performance.`
       },
       {
         role: 'user',
-        content: imageUrl
-          ? [
-              { type: 'text', text: prompt },
-              { type: 'image_url', image_url: { url: imageUrl } }
-            ]
-          : prompt
+        content: prompt
       }
     ];
 
-    // Call OpenAI API
+    // Call OpenAI API with cost-effective model
+    // GPT-3.5 Turbo: ~$0.002 per analysis (99% profit margin on $29/month)
     const openai = getOpenAIClient();
     const response = await openai.chat.completions.create({
-      model: imageUrl ? 'gpt-4-vision-preview' : 'gpt-4-turbo-preview',
+      model: 'gpt-3.5-turbo',
       messages,
       response_format: { type: 'json_object' },
       max_tokens: 1000,
