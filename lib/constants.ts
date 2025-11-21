@@ -31,8 +31,9 @@ export const API_ROUTES = {
   ANALYZE: '/api/analyze',
   STRIPE_CHECKOUT: '/api/stripe/checkout',
   STRIPE_WEBHOOK: '/api/stripe/webhook',
-  META_CONNECT: '/api/meta/connect',
-  META_IMPORT_ADS: '/api/meta/import-ads',
+  GOOGLE_CONNECT: '/api/google/connect',
+  GOOGLE_IMPORT_ADS: '/api/google/import-ads',
+  GOOGLE_DISCONNECT: '/api/google/disconnect',
 } as const;
 
 // App Routes
@@ -42,7 +43,6 @@ export const APP_ROUTES = {
   SIGNUP: '/auth/signup',
   DASHBOARD: '/dashboard',
   DASHBOARD_IMPORT: '/dashboard/import',
-  DASHBOARD_COMPETITOR: '/dashboard/competitor',
   DASHBOARD_ANALYZE: (id: string) => `/dashboard/analyze/${id}`,
 } as const;
 
@@ -71,11 +71,15 @@ export const STRIPE_EVENTS = {
   INVOICE_PAYMENT_FAILED: 'invoice.payment_failed',
 } as const;
 
-// Meta API Configuration
-export const META_CONFIG = {
-  API_VERSION: 'v18.0',
-  OAUTH_SCOPES: ['ads_read', 'ads_management'],
-  TOKEN_EXPIRY_DAYS: 60,
+// Google Ads API Configuration
+export const GOOGLE_CONFIG = {
+  API_VERSION: 'v17',
+  OAUTH_ENDPOINT: 'https://accounts.google.com/o/oauth2/v2/auth',
+  TOKEN_ENDPOINT: 'https://oauth2.googleapis.com/token',
+  ADS_API_ENDPOINT: 'https://googleads.googleapis.com',
+  SCOPES: ['https://www.googleapis.com/auth/adwords'],
+  REDIRECT_URI: (process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000') + '/api/google/connect',
+  TOKEN_EXPIRY_SECONDS: 3600, // 1 hour
 } as const;
 
 // AI Analysis Configuration

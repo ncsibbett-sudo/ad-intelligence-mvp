@@ -2,23 +2,98 @@
 
 export const dynamic = 'force-dynamic';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase/client';
-import { ArrowLeft, Upload, FileText } from 'lucide-react';
+import { ArrowLeft, Upload, FileText, CheckCircle, AlertCircle } from 'lucide-react';
 import Link from 'next/link';
+import { GOOGLE_CONFIG } from '@/lib/constants';
 
 export default function ImportPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [importing, setImporting] = useState(false);
   const [error, setError] = useState('');
+  const [googleConnected, setGoogleConnected] = useState(false);
+  const [importResult, setImportResult] = useState<any>(null);
 
-  function connectMetaAccount() {
-    const redirectUri = encodeURIComponent(`${window.location.origin}/api/meta/connect`);
-    const scope = 'ads_read,ads_management';
-    const metaOAuthUrl = `https://www.facebook.com/v18.0/dialog/oauth?client_id=${process.env.NEXT_PUBLIC_META_APP_ID}&redirect_uri=${redirectUri}&scope=${scope}&response_type=code`;
+  useEffect(() => {
+    // Check for connection success/error from OAuth redirect
+    if (searchParams.get('google_connected') === 'true') {
+      setGoogleConnected(true);
+    }
+    if (searchParams.get('error')) {
+      const errorType = searchParams.get('error');
+      let errorMessage = 'Failed to connect Google Ads account';
+      if (errorType === 'google_auth_denied') {
+        errorMessage = 'Authorization was denied. Please try again.';
+      }
+      setError(errorMessage);
+    }
+  }, [searchParams]);
 
-    window.location.href = metaOAuthUrl;
+  function connectGoogleAdsAccount() {
+    const clientId = process.env.NEXT_PUBLIC_GOOGLE_ADS_CLIENT_ID;
+    if (!clientId) {
+      setError('Google Ads is not configured. Please contact support.');
+      return;
+    }
+
+    const redirectUri = GOOGLE_CONFIG.REDIRECT_URI;
+    const scope = GOOGLE_CONFIG.SCOPES.join(' ');
+    const googleOAuthUrl = `${GOOGLE_CONFIG.OAUTH_ENDPOINT}?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=${encodeURIComponent(scope)}&access_type=offline&prompt=consent`;
+
+    window.location.href = googleOAuthUrl;
+  }
+
+  async function handleImportFromGoogle() {
+    setImporting(true);
+    setError('');
+    setImportResult(null);
+
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.access_token) {
+        router.push('/auth/login');
+        return;
+      }
+
+      const response = await fetch('/api/google/import-ads', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({
+          campaignStatus: 'ENABLED',
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        if (data.requiresConnection) {
+          setError('Please connect your Google Ads account first.');
+          setGoogleConnected(false);
+        } else {
+          throw new Error(data.error || 'Failed to import ads');
+        }
+        return;
+      }
+
+      setImportResult(data);
+      if (data.importedAds > 0 || data.updatedAds > 0) {
+        // Refresh the page after a delay to show results
+        setTimeout(() => {
+          router.push('/dashboard');
+        }, 3000);
+      }
+    } catch (err) {
+      console.error('Error importing ads:', err);
+      setError(err instanceof Error ? err.message : 'Failed to import ads');
+    } finally {
+      setImporting(false);
+    }
   }
 
   async function handleManualImport(e: React.FormEvent<HTMLFormElement>) {
@@ -80,27 +155,72 @@ export default function ImportPage() {
         <div className="max-w-4xl mx-auto">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Import Your Ads</h1>
           <p className="text-gray-600 mb-8">
-            Connect your Meta account or manually add ad creatives for analysis
+            Connect your Google Ads account or manually add ad creatives for analysis
           </p>
 
+          {/* Success/Error Messages */}
+          {googleConnected && (
+            <div className="bg-green-50 border border-green-200 text-green-800 p-4 rounded-lg mb-6 flex items-center gap-3">
+              <CheckCircle className="w-5 h-5 flex-shrink-0" />
+              <div>
+                <p className="font-medium">Google Ads account connected successfully!</p>
+                <p className="text-sm">You can now import your ads using the button below.</p>
+              </div>
+            </div>
+          )}
+
+          {error && (
+            <div className="bg-red-50 border border-red-200 text-red-800 p-4 rounded-lg mb-6 flex items-center gap-3">
+              <AlertCircle className="w-5 h-5 flex-shrink-0" />
+              <p>{error}</p>
+            </div>
+          )}
+
+          {importResult && (
+            <div className="bg-blue-50 border border-blue-200 text-blue-800 p-4 rounded-lg mb-6">
+              <p className="font-medium mb-2">Import Complete!</p>
+              <ul className="text-sm space-y-1">
+                <li>Total ads: {importResult.totalAds}</li>
+                <li>Imported: {importResult.importedAds}</li>
+                <li>Updated: {importResult.updatedAds}</li>
+                {importResult.skippedAds > 0 && (
+                  <li className="text-yellow-700">Skipped: {importResult.skippedAds}</li>
+                )}
+              </ul>
+              <p className="text-sm mt-2">Redirecting to dashboard...</p>
+            </div>
+          )}
+
           <div className="grid md:grid-cols-2 gap-6 mb-8">
-            {/* Meta Connect */}
+            {/* Google Ads Connect */}
             <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
               <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
                 <Upload className="w-6 h-6 text-blue-600" />
               </div>
-              <h3 className="text-lg font-semibold mb-2">Connect Meta Account</h3>
+              <h3 className="text-lg font-semibold mb-2">Connect Google Ads</h3>
               <p className="text-gray-600 mb-4 text-sm">
-                Import ads directly from your Meta Ads account with performance data
+                Import ads directly from your Google Ads account with performance metrics
               </p>
-              <button
-                onClick={connectMetaAccount}
-                className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition font-medium"
-              >
-                Connect Meta
-              </button>
+
+              {!googleConnected ? (
+                <button
+                  onClick={connectGoogleAdsAccount}
+                  className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition font-medium"
+                >
+                  Connect Google Ads
+                </button>
+              ) : (
+                <button
+                  onClick={handleImportFromGoogle}
+                  disabled={importing}
+                  className="w-full bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {importing ? 'Importing...' : 'Import Ads from Google'}
+                </button>
+              )}
+
               <p className="mt-3 text-xs text-gray-500">
-                Note: Requires Meta App configuration with valid credentials
+                Imports active campaigns and ads with performance data (impressions, clicks, CTR, CPC, conversions)
               </p>
             </div>
 

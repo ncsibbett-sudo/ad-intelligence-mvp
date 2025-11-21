@@ -1,0 +1,95 @@
+{
+  "authenticationError": {
+    "status": 401,
+    "code": "UNAUTHENTICATED",
+    "message": "Request is missing required authentication credential.",
+    "details": "The access token is invalid or has expired."
+  },
+  "invalidRefreshToken": {
+    "status": 400,
+    "error": "invalid_grant",
+    "error_description": "Token has been expired or revoked."
+  },
+  "rateLimitError": {
+    "status": 429,
+    "code": "RESOURCE_EXHAUSTED",
+    "message": "Quota exceeded for quota metric 'Read requests' and limit 'Read requests per minute per project'.",
+    "details": "Please retry after 60 seconds."
+  },
+  "permissionDeniedError": {
+    "status": 403,
+    "code": "PERMISSION_DENIED",
+    "message": "The caller does not have permission to access customer.",
+    "details": "User does not have access to the requested customer account."
+  },
+  "invalidCustomerIdError": {
+    "status": 400,
+    "code": "INVALID_ARGUMENT",
+    "message": "Request contains an invalid argument.",
+    "details": "The customer ID '0000000000' is invalid or does not exist."
+  },
+  "invalidOAuthCode": {
+    "status": 400,
+    "error": "invalid_grant",
+    "error_description": "Bad Request"
+  },
+  "developerTokenError": {
+    "status": 403,
+    "code": "PERMISSION_DENIED",
+    "message": "Developer token is not approved.",
+    "details": "Your developer token is pending approval or has been rejected."
+  },
+  "serviceUnavailableError": {
+    "status": 503,
+    "code": "UNAVAILABLE",
+    "message": "The service is currently unavailable.",
+    "details": "Please try again later."
+  },
+  "internalServerError": {
+    "status": 500,
+    "code": "INTERNAL",
+    "message": "Internal server error occurred.",
+    "details": "An unexpected error occurred. Please try again."
+  },
+  "badGatewayError": {
+    "status": 502,
+    "code": "UNAVAILABLE",
+    "message": "Bad gateway.",
+    "details": "Error connecting to Google Ads API."
+  },
+  "timeoutError": {
+    "status": 504,
+    "code": "DEADLINE_EXCEEDED",
+    "message": "Deadline exceeded.",
+    "details": "The request took too long to complete."
+  },
+  "invalidDateRangeError": {
+    "status": 400,
+    "code": "INVALID_ARGUMENT",
+    "message": "The date range is invalid.",
+    "details": "Start date must be before end date."
+  },
+  "queryTooComplexError": {
+    "status": 400,
+    "code": "INVALID_ARGUMENT",
+    "message": "The GAQL query is too complex.",
+    "details": "Please simplify your query or reduce the date range."
+  },
+  "customerNotFoundError": {
+    "status": 404,
+    "code": "NOT_FOUND",
+    "message": "The requested customer was not found.",
+    "details": "Customer ID does not exist or you don't have access."
+  },
+  "missingRequiredScopesError": {
+    "status": 403,
+    "error": "access_denied",
+    "error_description": "Required scopes not granted: https://www.googleapis.com/auth/adwords"
+  },
+  "accountSuspendedError": {
+    "status": 403,
+    "code": "PERMISSION_DENIED",
+    "message": "The customer account has been suspended.",
+    "details": "This account is suspended and cannot be accessed."
+  }
+}

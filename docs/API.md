@@ -176,15 +176,15 @@ stripe-signature: t=timestamp,v1=signature
 
 ---
 
-### 4. GET `/api/meta/connect`
+### 4. GET `/api/google/connect`
 
-OAuth callback for Meta/Facebook authentication (partially implemented).
+OAuth callback for Google Ads authentication.
 
 **Authentication**: None (public OAuth callback)
 
 **Query Parameters:**
 ```
-?code=<oauth_code>&state=<user_id>
+?code=<oauth_code>
 ```
 
 **Success**: Redirects to `/dashboard` with token stored

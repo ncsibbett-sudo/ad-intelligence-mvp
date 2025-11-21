@@ -1,0 +1,215 @@
+{
+  "responsiveSearchAd": {
+    "id": "123456789",
+    "name": "RSA - Summer Sale 2024",
+    "campaignId": "987654321",
+    "campaignName": "Summer Promotion Campaign",
+    "adGroupId": "111222333",
+    "adGroupName": "Summer Sale Ads",
+    "status": "ENABLED",
+    "type": "RESPONSIVE_SEARCH_AD",
+    "finalUrls": ["https://example.com/summer-sale"],
+    "displayUrl": "example.com/summer-sale",
+    "headlines": [
+      "50% Off Summer Sale",
+      "Limited Time Offer",
+      "Free Shipping Available"
+    ],
+    "descriptions": [
+      "Shop our summer collection with huge discounts. Free shipping on orders over $50.",
+      "Don't miss out on the biggest sale of the season!"
+    ],
+    "metrics": {
+      "impressions": 15420,
+      "clicks": 892,
+      "cost": 1245670000,
+      "conversions": 45,
+      "ctr": 5.78,
+      "averageCpc": 1396500
+    }
+  },
+  "highPerformanceAd": {
+    "id": "987654321",
+    "name": "RSA - Best Seller Product",
+    "campaignId": "555666777",
+    "campaignName": "Evergreen Products Campaign",
+    "adGroupId": "444555666",
+    "adGroupName": "Best Sellers",
+    "status": "ENABLED",
+    "type": "RESPONSIVE_SEARCH_AD",
+    "finalUrls": ["https://example.com/best-sellers"],
+    "displayUrl": "example.com/products",
+    "headlines": [
+      "Top Rated Products",
+      "Customer Favorite",
+      "4.8 Star Rating"
+    ],
+    "descriptions": [
+      "Join thousands of satisfied customers. Shop our best-selling products today.",
+      "Premium quality at affordable prices. Money-back guarantee."
+    ],
+    "metrics": {
+      "impressions": 45800,
+      "clicks": 3210,
+      "cost": 4567890000,
+      "conversions": 187,
+      "ctr": 7.01,
+      "averageCpc": 1422800
+    }
+  },
+  "lowPerformanceAd": {
+    "id": "111222333",
+    "name": "RSA - Generic Product Ad",
+    "campaignId": "999888777",
+    "campaignName": "Test Campaign",
+    "adGroupId": "777888999",
+    "adGroupName": "Generic Ads",
+    "status": "ENABLED",
+    "type": "RESPONSIVE_SEARCH_AD",
+    "finalUrls": ["https://example.com/products"],
+    "displayUrl": "example.com",
+    "headlines": [
+      "Buy Products Online",
+      "Shop Now",
+      "Great Deals"
+    ],
+    "descriptions": [
+      "Check out our products.",
+      "Visit our store today."
+    ],
+    "metrics": {
+      "impressions": 8500,
+      "clicks": 85,
+      "cost": 127500000,
+      "conversions": 2,
+      "ctr": 1.0,
+      "averageCpc": 1500000
+    }
+  },
+  "pausedAd": {
+    "id": "444555666",
+    "name": "RSA - Paused Campaign Ad",
+    "campaignId": "222333444",
+    "campaignName": "Old Campaign",
+    "adGroupId": "333444555",
+    "adGroupName": "Paused Ads",
+    "status": "PAUSED",
+    "type": "RESPONSIVE_SEARCH_AD",
+    "finalUrls": ["https://example.com/old-offer"],
+    "displayUrl": "example.com/old-offer",
+    "headlines": [
+      "Previous Sale",
+      "Old Offer",
+      "Expired Deal"
+    ],
+    "descriptions": [
+      "This campaign is no longer active.",
+      "Check out our current offers instead."
+    ],
+    "metrics": {
+      "impressions": 2340,
+      "clicks": 67,
+      "cost": 89000000,
+      "conversions": 5,
+      "ctr": 2.86,
+      "averageCpc": 1328358
+    }
+  },
+  "adWithoutMetrics": {
+    "id": "777888999",
+    "name": "RSA - New Ad No Data",
+    "campaignId": "123123123",
+    "campaignName": "Brand New Campaign",
+    "adGroupId": "456456456",
+    "adGroupName": "New Ads",
+    "status": "ENABLED",
+    "type": "RESPONSIVE_SEARCH_AD",
+    "finalUrls": ["https://example.com/new"],
+    "displayUrl": "example.com/new",
+    "headlines": [
+      "Brand New Product",
+      "Just Launched",
+      "Be The First"
+    ],
+    "descriptions": [
+      "Get early access to our newest product line.",
+      "Limited availability - order now!"
+    ],
+    "metrics": {
+      "impressions": 0,
+      "clicks": 0,
+      "cost": 0,
+      "conversions": 0,
+      "ctr": 0,
+      "averageCpc": 0
+    }
+  },
+  "multipleAds": [
+    {
+      "id": "100001",
+      "name": "RSA - Ad 1",
+      "campaignId": "500001",
+      "campaignName": "Campaign A",
+      "adGroupId": "600001",
+      "adGroupName": "Ad Group 1",
+      "status": "ENABLED",
+      "type": "RESPONSIVE_SEARCH_AD",
+      "finalUrls": ["https://example.com/page1"],
+      "displayUrl": "example.com/page1",
+      "headlines": ["Headline 1A", "Headline 1B", "Headline 1C"],
+      "descriptions": ["Description 1A", "Description 1B"],
+      "metrics": {
+        "impressions": 5000,
+        "clicks": 250,
+        "cost": 375000000,
+        "conversions": 15,
+        "ctr": 5.0,
+        "averageCpc": 1500000
+      }
+    },
+    {
+      "id": "100002",
+      "name": "RSA - Ad 2",
+      "campaignId": "500001",
+      "campaignName": "Campaign A",
+      "adGroupId": "600002",
+      "adGroupName": "Ad Group 2",
+      "status": "ENABLED",
+      "type": "RESPONSIVE_SEARCH_AD",
+      "finalUrls": ["https://example.com/page2"],
+      "displayUrl": "example.com/page2",
+      "headlines": ["Headline 2A", "Headline 2B", "Headline 2C"],
+      "descriptions": ["Description 2A", "Description 2B"],
+      "metrics": {
+        "impressions": 7500,
+        "clicks": 450,
+        "cost": 630000000,
+        "conversions": 28,
+        "ctr": 6.0,
+        "averageCpc": 1400000
+      }
+    },
+    {
+      "id": "100003",
+      "name": "RSA - Ad 3",
+      "campaignId": "500002",
+      "campaignName": "Campaign B",
+      "adGroupId": "600003",
+      "adGroupName": "Ad Group 3",
+      "status": "PAUSED",
+      "type": "RESPONSIVE_SEARCH_AD",
+      "finalUrls": ["https://example.com/page3"],
+      "displayUrl": "example.com/page3",
+      "headlines": ["Headline 3A", "Headline 3B", "Headline 3C"],
+      "descriptions": ["Description 3A", "Description 3B"],
+      "metrics": {
+        "impressions": 3200,
+        "clicks": 96,
+        "cost": 144000000,
+        "conversions": 4,
+        "ctr": 3.0,
+        "averageCpc": 1500000
+      }
+    }
+  ]
+}

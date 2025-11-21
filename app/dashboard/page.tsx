@@ -214,18 +214,7 @@ export default function DashboardPage() {
               <Plus className="w-6 h-6 text-blue-600" />
               <div>
                 <h3 className="font-medium text-gray-900">Import Your Ads</h3>
-                <p className="text-sm text-gray-600">Connect Meta account and import ads</p>
-              </div>
-            </Link>
-
-            <Link
-              href="/dashboard/competitor"
-              className="flex items-center gap-3 p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-purple-500 hover:bg-purple-50 transition"
-            >
-              <Plus className="w-6 h-6 text-purple-600" />
-              <div>
-                <h3 className="font-medium text-gray-900">Analyze Competitors</h3>
-                <p className="text-sm text-gray-600">Search and analyze competitor ads</p>
+                <p className="text-sm text-gray-600">Connect Google Ads account and import campaigns</p>
               </div>
             </Link>
           </div>
@@ -291,7 +280,7 @@ export default function DashboardPage() {
                 No creatives yet
               </h3>
               <p className="text-gray-600 mb-6">
-                Get started by importing your ads or analyzing competitors
+                Get started by importing your ads from Google Ads or manually adding them
               </p>
               <div className="flex gap-4 justify-center">
                 <Link
@@ -299,12 +288,6 @@ export default function DashboardPage() {
                   className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition"
                 >
                   Import Ads
-                </Link>
-                <Link
-                  href="/dashboard/competitor"
-                  className="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 transition"
-                >
-                  Analyze Competitors
                 </Link>
               </div>
             </div>

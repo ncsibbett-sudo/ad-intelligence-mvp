@@ -201,9 +201,11 @@ create table public.users (
   payment_status text not null default 'free', -- 'free' | 'paid'
   analysis_count integer not null default 0,
   stripe_customer_id text,
-  meta_access_token text,
-  meta_token_expires_at timestamptz,
-  meta_ad_account_id text,
+  google_refresh_token text,
+  google_access_token text,
+  google_token_expires_at timestamptz,
+  google_customer_id text,
+  google_account_name text,
   created_at timestamptz default now()
 );
 ```
@@ -218,7 +220,7 @@ create table creatives (
   ad_image_url text,
   cta text,
   source_type text not null, -- 'own' | 'competitor'
-  meta_ad_id text,
+  ad_id text,
   created_at timestamptz default now()
 );
 ```

@@ -221,18 +221,18 @@ The codebase is deployed and functional at `https://ad-intelligence-mvp.vercel.a
 - Update `STRIPE_WEBHOOK_SECRET` with CLI-provided secret
 - Verify webhook route returns 200 status
 
-## Meta API Integration (Partial)
+## Google Ads API Integration
 
-The UI for Meta Ad Library integration exists (`app/dashboard/competitor/page.tsx`) but:
-- OAuth flow in `/api/meta/connect` requires Meta App to be in "Live" mode
-- Requires Facebook Developer approval for Marketing API access
-- Currently returns mock data for UI demonstration
+The application integrates with Google Ads API to import user's ad campaigns:
+- OAuth 2.0 flow in `/api/google/connect` for secure authorization
+- Ad import functionality in `/api/google/import-ads`
+- Support for filtering by campaign status and date range
+- Performance metrics sync (impressions, clicks, CTR, CPC, conversions)
 
-To complete integration:
-1. Get Meta App approved for production
-2. Configure OAuth redirect URI in Meta Developer Console
-3. Update `lib/meta/client.ts` with proper access token handling
-4. Remove mock data returns from competitor search endpoint
+Required environment variables:
+- `GOOGLE_ADS_CLIENT_ID` - OAuth client ID
+- `GOOGLE_ADS_CLIENT_SECRET` - OAuth client secret
+- `GOOGLE_ADS_DEVELOPER_TOKEN` - Google Ads API developer token
 
 ## TypeScript Configuration
 

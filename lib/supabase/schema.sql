@@ -8,9 +8,12 @@ create table public.users (
   stripe_customer_id text,
   payment_status text default 'free' check (payment_status in ('free', 'paid')),
   analysis_count integer default 0,
-  meta_access_token text,
-  meta_token_expires_at timestamp with time zone,
-  meta_ad_account_id text,
+  -- Google Ads integration
+  google_refresh_token text,
+  google_access_token text,
+  google_token_expires_at timestamp with time zone,
+  google_customer_id text,
+  google_account_name text,
   created_at timestamp with time zone default now(),
   updated_at timestamp with time zone default now()
 );
@@ -144,3 +147,4 @@ create index creatives_source_type_idx on public.creatives(source_type);
 create index analysis_creative_id_idx on public.analysis(creative_id);
 create index payments_user_id_idx on public.payments(user_id);
 create index payments_stripe_session_id_idx on public.payments(stripe_session_id);
+create index idx_users_google_customer_id on public.users(google_customer_id);

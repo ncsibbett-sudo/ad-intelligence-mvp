@@ -9,16 +9,14 @@ A production-ready MVP for analyzing ad creatives and discovering what drives pe
 - [API Documentation](./docs/API.md) - Complete API reference
 - [Architecture Guide](./docs/ARCHITECTURE.md) - System design and data flow
 - [Contributing Guide](./CONTRIBUTING.md) - Development workflow
-- [Meta OAuth Setup](./docs/META_OAUTH_SETUP.md) - Meta integration guide
 - [Code Review](./docs/SPRINT3_CODE_REVIEW.md) - Quality assessment
 
 ## Features
 
 - **User Authentication** - Secure signup/login with Supabase Auth
-- **Meta Ads Integration** - Connect Meta ad accounts and import ad creatives
-- **Competitor Analysis** - Search and analyze competitor ads via Meta Ad Library
+- **Google Ads Integration** - Connect Google Ads accounts and import ad campaigns with performance metrics
 - **Hybrid AI Analysis** - Free tier uses mock AI ($0 cost), Pro tier uses GPT-3.5 Turbo (~$0.002/analysis)
-- **Performance Insights** - Link creative elements to performance metrics
+- **Performance Insights** - Link creative elements to performance metrics (impressions, clicks, CTR, CPC, conversions)
 - **Freemium Model** - Free tier (5 analyses) + Pro subscription via Stripe
 - **Dashboard** - View, manage, and analyze ad creatives
 - **Responsive Design** - Mobile-first UI with Tailwind CSS
@@ -30,7 +28,7 @@ A production-ready MVP for analyzing ad creatives and discovering what drives pe
 - **Backend**: Next.js API Routes
 - **Database**: Supabase (PostgreSQL + Auth)
 - **Payments**: Stripe (Checkout + Webhooks)
-- **APIs**: Meta Marketing API, Meta Ad Library API
+- **APIs**: Google Ads API (v17+)
 - **AI**: Hybrid approach - Mock AI (free tier) + GPT-3.5 Turbo (paid tier)
 - **Hosting**: Vercel-ready
 
@@ -39,7 +37,8 @@ A production-ready MVP for analyzing ad creatives and discovering what drives pe
 - Node.js 18+ and npm
 - Supabase account and project
 - Stripe account
-- Meta Developer account (for Meta Ads integration)
+- Google Cloud account (for Google Ads API integration)
+- Google Ads account (for importing ad data)
 
 ## Setup Instructions
 
@@ -65,26 +64,32 @@ npm install
    - Events: `checkout.session.completed`, `customer.subscription.deleted`, `invoice.payment_failed`
 4. Copy webhook signing secret
 
-### 4. Meta Setup (Optional)
+### 4. Google Ads Setup
 
-1. Create app at [developers.facebook.com](https://developers.facebook.com)
-2. Add "Marketing API" product
-3. Configure OAuth redirect: `https://your-domain.com/api/meta/connect`
-4. Get App ID and App Secret
+1. Create a project at [Google Cloud Console](https://console.cloud.google.com)
+2. Enable Google Ads API in APIs & Services
+3. Create OAuth 2.0 credentials:
+   - Application type: Web application
+   - Authorized redirect URI: `https://your-domain.com/api/google/connect`
+4. Apply for Google Ads API Developer Token at [Google Ads API Center](https://ads.google.com/aw/apicenter)
+5. Get Client ID, Client Secret, and Developer Token
+
+**Note**: Developer token approval can take 2-4 weeks. For development, you can use a test account.
 
 ### 5. Environment Variables
 
-Create `.env.local` file (copy from `.env.local.example`):
+Create `.env.local` file (copy from `.env.example`):
 
 ```env
 # Supabase
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
 
-# Meta/Facebook
-META_APP_ID=your_meta_app_id
-META_APP_SECRET=your_meta_app_secret
-META_ACCESS_TOKEN=your_meta_access_token
+# Google Ads (required for ad import)
+GOOGLE_ADS_CLIENT_ID=your_google_oauth_client_id
+GOOGLE_ADS_CLIENT_SECRET=your_google_oauth_client_secret
+GOOGLE_ADS_DEVELOPER_TOKEN=your_google_ads_developer_token
 
 # Stripe
 NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=your_stripe_publishable_key
@@ -96,9 +101,17 @@ OPENAI_API_KEY=your_openai_api_key
 
 # App
 NEXT_PUBLIC_APP_URL=http://localhost:3000
+NEXT_PUBLIC_GOOGLE_ADS_ENABLED=true
 ```
 
-### 6. Run Development Server
+**Environment Variables Explained:**
+
+- `GOOGLE_ADS_CLIENT_ID` - OAuth 2.0 Client ID from Google Cloud Console
+- `GOOGLE_ADS_CLIENT_SECRET` - OAuth 2.0 Client Secret from Google Cloud Console
+- `GOOGLE_ADS_DEVELOPER_TOKEN` - Developer token from Google Ads API Center (required for API access)
+- `NEXT_PUBLIC_GOOGLE_ADS_ENABLED` - Feature flag to enable/disable Google Ads integration
+
+### 7. Run Development Server
 
 ```bash
 npm run dev
@@ -113,14 +126,13 @@ ad-intelligence/
 ├── app/                          # Next.js App Router
 │   ├── api/                      # API routes
 │   │   ├── analyze/              # AI analysis endpoint
-│   │   ├── meta/                 # Meta OAuth & data fetching
+│   │   ├── google/               # Google Ads OAuth & ad import
 │   │   └── stripe/               # Stripe checkout & webhooks
 │   ├── auth/                     # Authentication pages
 │   │   ├── login/
 │   │   └── signup/
 │   ├── dashboard/                # Main application
 │   │   ├── analyze/[id]/         # Analysis page
-│   │   ├── competitor/           # Competitor search
 │   │   ├── import/               # Import ads
 │   │   └── page.tsx              # Dashboard home
 │   ├── globals.css               # Global styles
@@ -130,18 +142,19 @@ ad-intelligence/
 │   ├── API.md                    # API endpoint reference
 │   ├── ARCHITECTURE.md           # System design guide
 │   ├── CLAUDE.md                 # AI assistant instructions
-│   ├── META_OAUTH_SETUP.md       # Meta integration guide
 │   └── SPRINT3_CODE_REVIEW.md    # Code quality assessment
 ├── lib/                          # Core utilities
 │   ├── ai/                       # AI analysis logic
 │   │   ├── analyze.ts            # Mock AI (currently active)
 │   │   └── openai-analyze.ts     # Real OpenAI integration (ready)
-│   ├── meta/                     # Meta API clients
-│   │   └── client.ts             # Meta Ads & Ad Library clients
+│   ├── google/                   # Google Ads API clients
+│   │   ├── client.ts             # Google Ads client (to be implemented)
+│   │   └── types.ts              # Google Ads type definitions
 │   ├── supabase/                 # Supabase configuration
 │   │   ├── client.ts             # Browser client
 │   │   ├── server.ts             # Server client
 │   │   └── schema.sql            # Database schema
+│   ├── constants.ts              # App-wide constants
 │   └── types.ts                  # TypeScript type definitions
 ├── Configuration files
 │   ├── .editorconfig             # Editor consistency
@@ -168,9 +181,9 @@ ad-intelligence/
 
 ### Ad Import Workflow
 
-1. **Meta OAuth**: Connect ad account → fetch ads with performance data
+1. **Google Ads OAuth**: Connect Google Ads account → fetch campaigns and ads with performance metrics
 2. **Manual Import**: Enter ad details directly
-3. **Competitor Search**: Search Meta Ad Library by brand name
+3. **Filter Options**: Import by date range and campaign status (active, paused, all)
 
 ### AI Analysis
 
@@ -230,7 +243,7 @@ For production, update:
 
 1. Test authentication flow
 2. Verify Stripe webhooks receiving events
-3. Test Meta OAuth (if configured)
+3. Test Google Ads OAuth connection and ad import
 4. Create test account and run analysis
 
 ## API Routes
@@ -238,7 +251,9 @@ For production, update:
 | Route | Method | Purpose |
 |-------|--------|---------|
 | `/api/analyze` | POST | Run AI analysis on creative |
-| `/api/meta/connect` | GET | Meta OAuth callback |
+| `/api/google/connect` | GET | Google Ads OAuth callback |
+| `/api/google/import-ads` | POST | Import ads from Google Ads |
+| `/api/google/disconnect` | POST | Disconnect Google Ads account |
 | `/api/stripe/checkout` | POST | Create Stripe session |
 | `/api/stripe/webhook` | POST | Handle Stripe events |
 
@@ -307,11 +322,13 @@ export async function middleware(request: NextRequest) {
 - Check webhook endpoint is publicly accessible
 - Review webhook logs in Stripe dashboard
 
-### Meta API Errors
+### Google Ads API Errors
 
-- Confirm app is in Live mode (not Development)
-- Verify access token has correct permissions
-- Check API version compatibility
+- Verify developer token is approved (can take 2-4 weeks)
+- Confirm OAuth credentials are correct in Google Cloud Console
+- Check that redirect URI matches exactly
+- Ensure Google Ads account has active campaigns
+- Verify API version compatibility (v17+)
 
 ## Future Enhancements
 

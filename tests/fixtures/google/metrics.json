@@ -1,0 +1,82 @@
+{
+  "excellentPerformance": {
+    "impressions": 100000,
+    "clicks": 8500,
+    "cost": 12750000000,
+    "conversions": 425,
+    "ctr": 8.5,
+    "averageCpc": 1500000
+  },
+  "goodPerformance": {
+    "impressions": 50000,
+    "clicks": 2500,
+    "cost": 3750000000,
+    "conversions": 125,
+    "ctr": 5.0,
+    "averageCpc": 1500000
+  },
+  "averagePerformance": {
+    "impressions": 25000,
+    "clicks": 750,
+    "cost": 1500000000,
+    "conversions": 30,
+    "ctr": 3.0,
+    "averageCpc": 2000000
+  },
+  "poorPerformance": {
+    "impressions": 10000,
+    "clicks": 100,
+    "cost": 250000000,
+    "conversions": 2,
+    "ctr": 1.0,
+    "averageCpc": 2500000
+  },
+  "noSpend": {
+    "impressions": 5000,
+    "clicks": 0,
+    "cost": 0,
+    "conversions": 0,
+    "ctr": 0,
+    "averageCpc": 0
+  },
+  "highCostLowConversion": {
+    "impressions": 30000,
+    "clicks": 1500,
+    "cost": 7500000000,
+    "conversions": 15,
+    "ctr": 5.0,
+    "averageCpc": 5000000
+  },
+  "lowCostHighConversion": {
+    "impressions": 15000,
+    "clicks": 900,
+    "cost": 450000000,
+    "conversions": 90,
+    "ctr": 6.0,
+    "averageCpc": 500000
+  },
+  "zeroMetrics": {
+    "impressions": 0,
+    "clicks": 0,
+    "cost": 0,
+    "conversions": 0,
+    "ctr": 0,
+    "averageCpc": 0
+  },
+  "microConversion": {
+    "impressions": 1000,
+    "clicks": 50,
+    "cost": 25000000,
+    "conversions": 0.5,
+    "ctr": 5.0,
+    "averageCpc": 500000
+  },
+  "highImpressionLowClick": {
+    "impressions": 500000,
+    "clicks": 500,
+    "cost": 1000000000,
+    "conversions": 10,
+    "ctr": 0.1,
+    "averageCpc": 2000000
+  }
+}

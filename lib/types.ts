@@ -61,27 +61,6 @@ export interface Payment {
   created_at: string;
 }
 
-export interface MetaAdData {
-  id: string;
-  name: string;
-  creative: {
-    image_url?: string;
-    body?: string;
-    title?: string;
-    link_description?: string;
-    call_to_action_type?: string;
-  };
-  insights?: {
-    data: Array<{
-      impressions?: string;
-      clicks?: string;
-      ctr?: string;
-      cpc?: string;
-      spend?: string;
-    }>;
-  };
-}
-
 export interface InsightSummary {
   best_performing_cta?: string;
   best_performing_emotion?: string;

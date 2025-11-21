@@ -1,0 +1,40 @@
+{
+  "singleAccount": {
+    "customerId": "1234567890",
+    "descriptiveName": "Test Company - Main Account",
+    "currencyCode": "USD",
+    "timeZone": "America/New_York"
+  },
+  "multipleAccounts": [
+    {
+      "customerId": "1234567890",
+      "descriptiveName": "Test Company - Main Account",
+      "currencyCode": "USD",
+      "timeZone": "America/New_York"
+    },
+    {
+      "customerId": "9876543210",
+      "descriptiveName": "Test Company - Secondary Account",
+      "currencyCode": "USD",
+      "timeZone": "America/Los_Angeles"
+    },
+    {
+      "customerId": "5555555555",
+      "descriptiveName": "Test Company - EU Account",
+      "currencyCode": "EUR",
+      "timeZone": "Europe/London"
+    }
+  ],
+  "managerAccount": {
+    "customerId": "1111111111",
+    "descriptiveName": "Test Company - Manager Account",
+    "currencyCode": "USD",
+    "timeZone": "America/Chicago"
+  },
+  "emptyAccount": {
+    "customerId": "0000000000",
+    "descriptiveName": "Empty Test Account",
+    "currencyCode": "USD",
+    "timeZone": "UTC"
+  }
+}
