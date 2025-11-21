@@ -41,3 +41,8 @@ stripe.exe
 
 # claude code local settings
 .claude/settings.local.json
+
+# Test artifacts
+playwright-report/
+test-results/
+nul
