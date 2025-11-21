@@ -2,14 +2,14 @@
 
 export const dynamic = 'force-dynamic';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase/client';
 import { ArrowLeft, Upload, FileText, CheckCircle, AlertCircle } from 'lucide-react';
 import Link from 'next/link';
 import { GOOGLE_CONFIG } from '@/lib/constants';
 
-export default function ImportPage() {
+function ImportPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [importing, setImporting] = useState(false);
@@ -319,5 +319,20 @@ export default function ImportPage() {
         </div>
       </main>
     </div>
+  );
+}
+
+export default function ImportPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading...</p>
+        </div>
+      </div>
+    }>
+      <ImportPageContent />
+    </Suspense>
   );
 }

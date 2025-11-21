@@ -228,7 +228,7 @@ export async function POST(request: NextRequest) {
 
     // Provide helpful error messages
     let errorMessage = 'Failed to import ads';
-    let statusCode = HTTP_STATUS.INTERNAL_SERVER_ERROR;
+    let statusCode: number = HTTP_STATUS.INTERNAL_SERVER_ERROR;
 
     if (error instanceof Error) {
       // Check for common error patterns

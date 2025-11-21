@@ -8,6 +8,7 @@ import { cookies } from 'next/headers';
 import { createClient } from '@supabase/supabase-js';
 import { exchangeCodeForTokens } from '@/lib/google/client';
 import { GoogleAdsClient } from '@/lib/google/client';
+import { GoogleCustomerAccount } from '@/lib/google/types';
 import { GOOGLE_CONFIG } from '@/lib/constants';
 
 export async function GET(request: NextRequest) {
@@ -92,7 +93,7 @@ export async function GET(request: NextRequest) {
       '' // We don't have a customer ID yet
     );
 
-    let customers: { id: string; name: string; currencyCode: string }[] = [];
+    let customers: GoogleCustomerAccount[] = [];
     try {
       customers = await googleAdsClient.getAccessibleCustomers();
     } catch (error) {
