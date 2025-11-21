@@ -92,7 +92,7 @@ export async function GET(request: NextRequest) {
       '' // We don't have a customer ID yet
     );
 
-    let customers;
+    let customers: { id: string; name: string; currencyCode: string }[] = [];
     try {
       customers = await googleAdsClient.getAccessibleCustomers();
     } catch (error) {
