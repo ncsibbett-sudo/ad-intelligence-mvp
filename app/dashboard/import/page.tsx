@@ -30,6 +30,28 @@ function ImportPageContent() {
       }
       setError(errorMessage);
     }
+
+    // Check database for existing Google connection
+    async function checkGoogleConnection() {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return;
+
+        const { data: userData } = await supabase
+          .from('users')
+          .select('google_refresh_token, google_customer_id')
+          .eq('id', user.id)
+          .single();
+
+        if (userData?.google_refresh_token && userData?.google_customer_id) {
+          setGoogleConnected(true);
+        }
+      } catch (err) {
+        console.error('Error checking Google connection:', err);
+      }
+    }
+
+    checkGoogleConnection();
   }, [searchParams]);
 
   function connectGoogleAdsAccount() {
