@@ -21,7 +21,15 @@
       "Bash(git push:*)",
       "Bash(git log:*)",
       "Bash(curl -I http://localhost:3000)",
-      "Bash(taskkill //F //PID 14452)"
+      "Bash(taskkill //F //PID 14452)",
+      "Bash(tree:*)",
+      "Bash(mkdir:*)",
+      "Bash(git mv:*)",
+      "Bash(npx mmdc:*)",
+      "Bash(find:*)",
+      "Bash(npm run type-check:*)",
+      "Bash(npm run lint)",
+      "Bash(test -f:*)"
     ],
     "deny": [],
     "ask": []

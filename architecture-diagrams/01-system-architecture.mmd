@@ -1,0 +1,108 @@
+graph TB
+    subgraph "Client Layer - Browser"
+        UI[Next.js Frontend React Components]
+        AUTH_UI[Auth Pages<br/>Login/Signup]
+        DASH[Dashboard Pages<br/>Import/Analyze]
+        SUPABASE_CLIENT[Supabase Client<br/>Browser Auth]
+    end
+
+    subgraph "Application Layer - Vercel Edge Functions"
+        subgraph "API Routes"
+            API_ANALYZE["api/analyze<br/>POST - AI Analysis"]
+            API_GOOGLE_CONNECT["api/google/connect<br/>GET - OAuth Callback"]
+            API_GOOGLE_IMPORT["api/google/import-ads<br/>POST - Import Campaigns"]
+            API_GOOGLE_DISCONNECT["api/google/disconnect<br/>POST - Revoke Access"]
+            API_STRIPE_CHECKOUT["api/stripe/checkout<br/>POST - Create Session"]
+            API_STRIPE_WEBHOOK["api/stripe/webhook<br/>POST - Payment Events"]
+        end
+
+        subgraph "Business Logic"
+            AI_MOCK[Mock AI Service<br/>Free Tier]
+            AI_OPENAI[OpenAI GPT-3.5<br/>Paid Tier]
+            GOOGLE_CLIENT[Google Ads API Client<br/>OAuth + Campaign Queries]
+            STRIPE_LIB[Stripe SDK<br/>Checkout + Webhooks]
+        end
+    end
+
+    subgraph "Data Layer - Supabase"
+        SUPABASE_AUTH[Supabase Auth<br/>JWT Tokens]
+        POSTGRES[(PostgreSQL Database)]
+
+        subgraph "Database Tables"
+            TBL_USERS[users<br/>- payment_status<br/>- analysis_count<br/>- google_tokens]
+            TBL_CREATIVES[creatives<br/>- ad_copy<br/>- image_url<br/>- source_type]
+            TBL_ANALYSIS[analysis<br/>- analysis_result jsonb<br/>- creative_id]
+            TBL_PAYMENTS[payments<br/>- stripe_session_id<br/>- status]
+        end
+    end
+
+    subgraph "External Services"
+        GOOGLE_ADS[Google Ads API<br/>OAuth + Campaign Data]
+        GOOGLE_OAUTH[Google OAuth 2.0<br/>accounts.google.com]
+        STRIPE_API[Stripe API<br/>Checkout + Payments]
+        OPENAI_API[OpenAI API<br/>GPT-3.5 Turbo]
+        VERCEL[Vercel Platform<br/>Auto Deploy + CDN]
+    end
+
+    %% User Interactions
+    UI --> AUTH_UI
+    UI --> DASH
+    AUTH_UI --> SUPABASE_CLIENT
+    DASH --> SUPABASE_CLIENT
+
+    %% API Calls with Auth
+    DASH -->|Authorization: Bearer token| API_ANALYZE
+    DASH -->|Authorization: Bearer token| API_GOOGLE_IMPORT
+    DASH -->|Authorization: Bearer token| API_STRIPE_CHECKOUT
+
+    %% OAuth Flow
+    DASH -->|Initiate OAuth| GOOGLE_OAUTH
+    GOOGLE_OAUTH -->|Redirect with code| API_GOOGLE_CONNECT
+    API_GOOGLE_CONNECT --> GOOGLE_CLIENT
+    GOOGLE_CLIENT --> GOOGLE_ADS
+
+    %% AI Analysis Flow
+    API_ANALYZE --> AI_MOCK
+    API_ANALYZE --> AI_OPENAI
+    AI_OPENAI --> OPENAI_API
+
+    %% Google Ads Integration
+    API_GOOGLE_IMPORT --> GOOGLE_CLIENT
+    API_GOOGLE_DISCONNECT --> GOOGLE_CLIENT
+
+    %% Payment Flow
+    API_STRIPE_CHECKOUT --> STRIPE_LIB
+    STRIPE_LIB --> STRIPE_API
+    STRIPE_API -->|Webhook Events| API_STRIPE_WEBHOOK
+
+    %% Database Operations
+    SUPABASE_CLIENT --> SUPABASE_AUTH
+    API_ANALYZE --> SUPABASE_AUTH
+    API_ANALYZE --> TBL_USERS
+    API_ANALYZE --> TBL_CREATIVES
+    API_ANALYZE --> TBL_ANALYSIS
+
+    API_GOOGLE_CONNECT --> TBL_USERS
+    API_GOOGLE_IMPORT --> TBL_CREATIVES
+
+    API_STRIPE_CHECKOUT --> TBL_USERS
+    API_STRIPE_CHECKOUT --> TBL_PAYMENTS
+    API_STRIPE_WEBHOOK --> TBL_USERS
+    API_STRIPE_WEBHOOK --> TBL_PAYMENTS
+
+    TBL_USERS --> POSTGRES
+    TBL_CREATIVES --> POSTGRES
+    TBL_ANALYSIS --> POSTGRES
+    TBL_PAYMENTS --> POSTGRES
+
+    %% Deployment
+    VERCEL -.->|Hosts| UI
+    VERCEL -.->|Hosts| API_ANALYZE
+
+    style UI fill:#e1f5ff
+    style SUPABASE_AUTH fill:#3ecf8e
+    style POSTGRES fill:#3ecf8e
+    style GOOGLE_ADS fill:#fbbc04
+    style STRIPE_API fill:#635bff
+    style OPENAI_API fill:#10a37f
+    style VERCEL fill:#000

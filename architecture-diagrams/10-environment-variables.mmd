@@ -1,0 +1,35 @@
+graph LR
+    subgraph "Vercel Environment Variables"
+        ENV_SUPABASE_URL[NEXT_PUBLIC_SUPABASE_URL<br/>Public, hardcoded in code]
+        ENV_SUPABASE_ANON[NEXT_PUBLIC_SUPABASE_ANON_KEY<br/>Public, hardcoded in code]
+        ENV_SUPABASE_SERVICE[SUPABASE_SERVICE_ROLE_KEY<br/>Secret, webhooks only]
+        ENV_STRIPE_SECRET[STRIPE_SECRET_KEY<br/>Secret, API calls]
+        ENV_STRIPE_WEBHOOK[STRIPE_WEBHOOK_SECRET<br/>Secret, signature verification]
+        ENV_GOOGLE_CLIENT[GOOGLE_ADS_CLIENT_ID<br/>Secret, OAuth]
+        ENV_GOOGLE_SECRET[GOOGLE_ADS_CLIENT_SECRET<br/>Secret, OAuth]
+        ENV_GOOGLE_DEV[GOOGLE_ADS_DEVELOPER_TOKEN<br/>Secret, API access]
+        ENV_OPENAI[OPENAI_API_KEY<br/>Secret, paid tier AI]
+        ENV_APP_URL[NEXT_PUBLIC_APP_URL<br/>Public, redirects]
+    end
+
+    subgraph "Used By"
+        API_ROUTES[API Routes<br/>Server-side only]
+        CLIENT_CODE[Client Code<br/>Browser bundle]
+    end
+
+    ENV_SUPABASE_URL --> CLIENT_CODE
+    ENV_SUPABASE_ANON --> CLIENT_CODE
+    ENV_APP_URL --> CLIENT_CODE
+
+    ENV_SUPABASE_SERVICE --> API_ROUTES
+    ENV_STRIPE_SECRET --> API_ROUTES
+    ENV_STRIPE_WEBHOOK --> API_ROUTES
+    ENV_GOOGLE_CLIENT --> API_ROUTES
+    ENV_GOOGLE_SECRET --> API_ROUTES
+    ENV_GOOGLE_DEV --> API_ROUTES
+    ENV_OPENAI --> API_ROUTES
+
+    style ENV_SUPABASE_SERVICE fill:#e74c3c
+    style ENV_STRIPE_SECRET fill:#e74c3c
+    style ENV_STRIPE_WEBHOOK fill:#e74c3c
+    style ENV_OPENAI fill:#e74c3c

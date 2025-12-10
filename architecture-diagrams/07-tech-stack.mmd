@@ -1,0 +1,52 @@
+graph LR
+    subgraph "Frontend Technologies"
+        NEXTJS[Next.js 15<br/>App Router]
+        REACT[React 18<br/>Server Components]
+        TYPESCRIPT[TypeScript 5.6<br/>strictNullChecks: false]
+        TAILWIND[TailwindCSS 3.4<br/>Styling]
+        LUCIDE[Lucide Icons<br/>UI Components]
+    end
+
+    subgraph "Backend Technologies"
+        NODE[Node.js 20<br/>Runtime]
+        NEXTAPI[Next.js API Routes<br/>Edge Functions]
+        SUPABASE[Supabase SDK<br/>Auth + Database]
+        STRIPE_SDK[Stripe SDK<br/>Payments]
+        GOOGLE_SDK[Google Ads API<br/>Campaign Data]
+    end
+
+    subgraph "Infrastructure"
+        VERCEL_INFRA[Vercel<br/>Hosting + CDN]
+        SUPABASE_INFRA[Supabase<br/>PostgreSQL + Auth]
+        GITHUB[GitHub<br/>Version Control]
+    end
+
+    subgraph "External APIs"
+        STRIPE_EXT[Stripe API<br/>Test Mode]
+        GOOGLE_EXT[Google Ads API<br/>v17]
+        OPENAI_EXT[OpenAI API<br/>GPT-3.5 Turbo]
+    end
+
+    NEXTJS --> REACT
+    NEXTJS --> TYPESCRIPT
+    NEXTJS --> TAILWIND
+    REACT --> LUCIDE
+
+    NEXTAPI --> NODE
+    NEXTAPI --> SUPABASE
+    NEXTAPI --> STRIPE_SDK
+    NEXTAPI --> GOOGLE_SDK
+
+    VERCEL_INFRA -.->|Deploys| NEXTJS
+    VERCEL_INFRA -.->|Hosts| NEXTAPI
+    GITHUB -.->|CI/CD| VERCEL_INFRA
+
+    STRIPE_SDK --> STRIPE_EXT
+    GOOGLE_SDK --> GOOGLE_EXT
+    NEXTAPI --> OPENAI_EXT
+
+    style NEXTJS fill:#000
+    style SUPABASE fill:#3ecf8e
+    style STRIPE_SDK fill:#635bff
+    style GOOGLE_SDK fill:#fbbc04
+    style OPENAI_EXT fill:#10a37f

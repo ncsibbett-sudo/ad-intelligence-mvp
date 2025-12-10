@@ -1,0 +1,36 @@
+sequenceDiagram
+    participant User
+    participant Dashboard
+    participant AnalyzeAPI as /api/analyze
+    participant Database
+    participant MockAI as Mock AI (Free)
+    participant OpenAI as OpenAI API (Paid)
+
+    User->>Dashboard: Click "Analyze Now"
+    Dashboard->>AnalyzeAPI: POST /api/analyze<br/>{creative_id, image_url, ad_copy}
+
+    AnalyzeAPI->>Database: Get user profile
+    Database-->>AnalyzeAPI: {payment_status, analysis_count}
+
+    alt Free User at Limit
+        AnalyzeAPI->>AnalyzeAPI: Check: analysis_count >= 5
+        AnalyzeAPI-->>Dashboard: 403 Forbidden<br/>{requiresUpgrade: true}
+        Dashboard->>User: Show "Upgrade to Pro" modal
+    else Within Limit or Paid User
+        AnalyzeAPI->>Database: Get creative details
+        Database-->>AnalyzeAPI: {ad_copy, image_url, cta}
+
+        alt Paid User
+            AnalyzeAPI->>OpenAI: Analyze with GPT-3.5<br/>Cost: ~$0.002
+            OpenAI-->>AnalyzeAPI: {emotion, tone, recommendations}
+        else Free User
+            AnalyzeAPI->>MockAI: Generate mock analysis<br/>Cost: $0
+            MockAI-->>AnalyzeAPI: {emotion, tone, recommendations}
+        end
+
+        AnalyzeAPI->>Database: INSERT into analysis table
+        AnalyzeAPI->>Database: INCREMENT analysis_count
+        Database-->>AnalyzeAPI: Success
+        AnalyzeAPI-->>Dashboard: 200 OK + Analysis Results
+        Dashboard->>User: Display analysis visualization
+    end

@@ -1,0 +1,43 @@
+graph TB
+    subgraph "Client Request"
+        CLIENT[Browser/API<br/>JWT Token: user_123]
+    end
+
+    subgraph "Supabase Auth"
+        AUTH["Token Verification<br/>Extract auth.uid"]
+    end
+
+    subgraph "PostgreSQL with RLS"
+        RLS_LAYER[RLS Policy Engine]
+
+        subgraph "Security Policies"
+            POLICY_SELECT["SELECT Policy<br/>auth.uid = user_id"]
+            POLICY_INSERT["INSERT Policy<br/>auth.uid = user_id"]
+            POLICY_UPDATE["UPDATE Policy<br/>auth.uid = user_id"]
+            POLICY_DELETE["DELETE Policy<br/>auth.uid = user_id"]
+        end
+
+        subgraph "Data Tables"
+            DATA["Users, Creatives, Analysis, Payments"]
+        end
+    end
+
+    CLIENT -->|Authorization: Bearer token| AUTH
+    AUTH -->|auth.uid = user_123| RLS_LAYER
+
+    RLS_LAYER --> POLICY_SELECT
+    RLS_LAYER --> POLICY_INSERT
+    RLS_LAYER --> POLICY_UPDATE
+    RLS_LAYER --> POLICY_DELETE
+
+    POLICY_SELECT -->|Filter rows| DATA
+    POLICY_INSERT -->|Validate ownership| DATA
+    POLICY_UPDATE -->|Check permission| DATA
+    POLICY_DELETE -->|Verify owner| DATA
+
+    DATA -.->|Only user_123's data| CLIENT
+
+    style AUTH fill:#3ecf8e
+    style RLS_LAYER fill:#f39c12
+    style POLICY_SELECT fill:#e74c3c
+    style DATA fill:#3498db

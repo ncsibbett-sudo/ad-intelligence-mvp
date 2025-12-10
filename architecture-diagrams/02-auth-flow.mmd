@@ -1,0 +1,32 @@
+sequenceDiagram
+    participant User
+    participant Browser
+    participant SupabaseAuth
+    participant APIRoute
+    participant Database
+    participant RLS as Row Level Security
+
+    User->>Browser: Enter email/password
+    Browser->>SupabaseAuth: signInWithPassword()
+    SupabaseAuth->>Database: Verify credentials
+    Database-->>SupabaseAuth: User record
+    SupabaseAuth-->>Browser: JWT Token + Session
+    Browser->>Browser: Store session in localStorage
+
+    Note over Browser: User makes API request
+
+    Browser->>APIRoute: POST /api/analyze<br/>Authorization: Bearer {JWT}
+    APIRoute->>APIRoute: Extract token from header
+    APIRoute->>SupabaseAuth: getUser(token)
+    SupabaseAuth-->>APIRoute: User ID + metadata
+
+    alt Valid Token
+        APIRoute->>Database: Query with user context
+        Database->>RLS: Check policy: auth.uid() = user_id
+        RLS-->>Database: Allow/Deny based on policy
+        Database-->>APIRoute: Filtered results
+        APIRoute-->>Browser: 200 OK + Data
+    else Invalid Token
+        SupabaseAuth-->>APIRoute: Unauthorized
+        APIRoute-->>Browser: 401 Unauthorized
+    end

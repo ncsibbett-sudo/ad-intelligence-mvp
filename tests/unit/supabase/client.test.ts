@@ -40,6 +40,10 @@ describe('Supabase Client - Unit Tests', () => {
     vi.clearAllMocks();
     mockCreateClient.mockReturnValue(mockClientInstance);
 
+    // Set environment variables for tests
+    process.env.NEXT_PUBLIC_SUPABASE_URL = 'https://pxmhzjxsbcwqmoctkkhu.supabase.co';
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB4bWh6anhzYmN3cW1vY3Rra2h1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA3MDUzMTksImV4cCI6MjA3NjI4MTMxOX0.B6xH_SLhOihiG_lc7iHskvFKil6uWOf47JNQhuxF27Q';
+
     // Clear the module cache to get fresh imports
     vi.resetModules();
   });
@@ -61,7 +65,7 @@ describe('Supabase Client - Unit Tests', () => {
     await import('@/lib/supabase/client');
 
     expect(mockCreateClient).toHaveBeenCalledWith(
-      'https://utmnwtxtwxfymrcyrgqr.supabase.co',
+      'https://pxmhzjxsbcwqmoctkkhu.supabase.co',
       expect.any(String)
     );
   });
@@ -74,7 +78,7 @@ describe('Supabase Client - Unit Tests', () => {
 
     expect(mockCreateClient).toHaveBeenCalledWith(
       expect.any(String),
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV0bW53dHh0d3hmeW1yY3lyZ3FyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjAwOTg5MTksImV4cCI6MjA3NTY3NDkxOX0.k_veXnDKq5vWZC32OZkuf7-A2fGqDuJMYezZnaav3m8'
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB4bWh6anhzYmN3cW1vY3Rra2h1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA3MDUzMTksImV4cCI6MjA3NjI4MTMxOX0.B6xH_SLhOihiG_lc7iHskvFKil6uWOf47JNQhuxF27Q'
     );
   });
 

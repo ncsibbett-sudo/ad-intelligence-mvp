@@ -1,0 +1,45 @@
+sequenceDiagram
+    participant User
+    participant Dashboard
+    participant GoogleOAuth as Google OAuth
+    participant ConnectAPI as /api/google/connect
+    participant ImportAPI as /api/google/import-ads
+    participant GoogleAdsAPI as Google Ads API
+    participant Database
+
+    User->>Dashboard: Click "Connect Google Ads"
+    Dashboard->>GoogleOAuth: Redirect to OAuth<br/>Scope: adwords
+
+    GoogleOAuth->>User: Show consent screen
+    User->>GoogleOAuth: Grant permission
+
+    GoogleOAuth->>ConnectAPI: GET /api/google/connect?code=xyz
+    ConnectAPI->>GoogleOAuth: Exchange code for tokens
+    GoogleOAuth-->>ConnectAPI: {access_token, refresh_token}
+
+    ConnectAPI->>GoogleAdsAPI: List accessible customers
+    GoogleAdsAPI-->>ConnectAPI: [{customer_id, name}]
+
+    ConnectAPI->>Database: UPDATE users<br/>SET google_refresh_token<br/>google_customer_id
+    ConnectAPI-->>Dashboard: Redirect with success
+
+    Note over User,Database: User imports ads
+
+    User->>Dashboard: Click "Import My Ads"
+    Dashboard->>ImportAPI: POST /api/google/import-ads<br/>{date_range, campaign_status}
+
+    ImportAPI->>Database: Get refresh_token
+    Database-->>ImportAPI: google_refresh_token
+
+    ImportAPI->>GoogleOAuth: Refresh access token
+    GoogleOAuth-->>ImportAPI: New access_token
+
+    ImportAPI->>GoogleAdsAPI: Query campaigns with filters
+    GoogleAdsAPI-->>ImportAPI: [{campaign_id, ads[], metrics}]
+
+    loop For each ad
+        ImportAPI->>Database: INSERT INTO creatives<br/>source_type: 'own'<br/>performance: {metrics}
+    end
+
+    ImportAPI-->>Dashboard: {imported_count, ads[]}
+    Dashboard->>User: Show imported ads list

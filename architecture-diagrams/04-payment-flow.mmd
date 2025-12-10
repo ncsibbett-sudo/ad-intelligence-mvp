@@ -1,0 +1,41 @@
+sequenceDiagram
+    participant User
+    participant Dashboard
+    participant CheckoutAPI as /api/stripe/checkout
+    participant StripeAPI as Stripe API
+    participant StripeCheckout as Stripe Hosted Checkout
+    participant WebhookAPI as /api/stripe/webhook
+    participant Database
+
+    User->>Dashboard: Click "Upgrade to Pro"
+    Dashboard->>CheckoutAPI: POST /api/stripe/checkout
+
+    CheckoutAPI->>Database: Get/Create Stripe customer
+    Database-->>CheckoutAPI: stripe_customer_id
+
+    CheckoutAPI->>StripeAPI: Create checkout session<br/>Price: $29/month<br/>Metadata: {user_id}
+    StripeAPI-->>CheckoutAPI: {checkout_url, session_id}
+
+    CheckoutAPI->>Database: INSERT payment record<br/>status: 'pending'
+    CheckoutAPI-->>Dashboard: {checkout_url}
+
+    Dashboard->>User: Redirect to Stripe
+    User->>StripeCheckout: Enter payment info<br/>Test Card: 4242...
+    StripeCheckout->>StripeAPI: Process payment
+    StripeAPI->>StripeAPI: Charge $29
+
+    alt Payment Successful
+        StripeAPI->>WebhookAPI: POST webhook<br/>Event: checkout.session.completed
+        WebhookAPI->>WebhookAPI: Verify signature
+        WebhookAPI->>Database: UPDATE users<br/>payment_status = 'paid'
+        WebhookAPI->>Database: UPDATE payments<br/>status = 'succeeded'
+        WebhookAPI-->>StripeAPI: 200 OK
+
+        StripeCheckout->>Dashboard: Redirect to success page
+        Dashboard->>User: Show "Welcome to Pro!"
+    else Payment Failed
+        StripeAPI->>WebhookAPI: Event: invoice.payment_failed
+        WebhookAPI->>Database: UPDATE payments<br/>status = 'failed'
+        StripeCheckout->>Dashboard: Redirect to failure page
+        Dashboard->>User: Show error message
+    end

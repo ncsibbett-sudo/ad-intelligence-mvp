@@ -1,0 +1,43 @@
+graph TB
+    subgraph "Development"
+        DEV_LOCAL[Local Development<br/>npm run dev<br/>localhost:3000]
+        DEV_GIT[Git Repository<br/>GitHub]
+    end
+
+    subgraph "Vercel Platform"
+        VERCEL_BUILD[Build Process<br/>next build<br/>TypeScript Check]
+        VERCEL_EDGE[Edge Network<br/>Global CDN<br/>30+ Regions]
+        VERCEL_FUNCTIONS[Serverless Functions<br/>API Routes<br/>Auto-scaling]
+    end
+
+    subgraph "Production Environment"
+        PROD_URL[ad-intelligence-mvp.vercel.app<br/>HTTPS + Custom Domain]
+        PREVIEW[Preview Deployments<br/>PR-specific URLs]
+    end
+
+    subgraph "External Services - Production"
+        SUPABASE_PROD[Supabase Production<br/>pxmhzjxsbcwqmoctkkkhu.supabase.co]
+        STRIPE_PROD[Stripe Test Mode<br/>Test Keys Active]
+        GOOGLE_PROD[Google Ads API<br/>Production Tokens]
+    end
+
+    DEV_LOCAL -->|git push| DEV_GIT
+    DEV_GIT -->|Webhook Trigger| VERCEL_BUILD
+    VERCEL_BUILD -->|Deploy Success| VERCEL_EDGE
+    VERCEL_BUILD -->|Deploy Success| VERCEL_FUNCTIONS
+
+    VERCEL_EDGE --> PROD_URL
+    VERCEL_FUNCTIONS --> PROD_URL
+
+    DEV_GIT -->|PR Created| PREVIEW
+
+    PROD_URL --> SUPABASE_PROD
+    VERCEL_FUNCTIONS --> SUPABASE_PROD
+    VERCEL_FUNCTIONS --> STRIPE_PROD
+    VERCEL_FUNCTIONS --> GOOGLE_PROD
+
+    style VERCEL_EDGE fill:#000
+    style PROD_URL fill:#000
+    style SUPABASE_PROD fill:#3ecf8e
+    style STRIPE_PROD fill:#635bff
+    style GOOGLE_PROD fill:#fbbc04

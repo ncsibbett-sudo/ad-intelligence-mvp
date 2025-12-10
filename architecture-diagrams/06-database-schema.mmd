@@ -1,0 +1,57 @@
+erDiagram
+    AUTH_USERS ||--o| USERS : extends
+    USERS ||--o{ CREATIVES : owns
+    USERS ||--o{ PAYMENTS : makes
+    CREATIVES ||--|| ANALYSIS : has
+
+    AUTH_USERS {
+        uuid id PK
+        text email
+        text encrypted_password
+        timestamptz created_at
+    }
+
+    USERS {
+        uuid id PK,FK
+        text email
+        text payment_status "free | paid"
+        integer analysis_count "default 0"
+        text stripe_customer_id
+        text google_refresh_token
+        text google_access_token
+        timestamptz google_token_expires_at
+        text google_customer_id
+        text google_account_name
+        timestamptz created_at
+    }
+
+    CREATIVES {
+        uuid id PK
+        uuid user_id FK
+        text source_type "own | competitor"
+        text brand_name
+        text ad_id
+        text ad_image_url
+        text ad_copy
+        text cta
+        jsonb performance "metrics object"
+        timestamptz created_at
+    }
+
+    ANALYSIS {
+        uuid id PK
+        uuid creative_id FK
+        jsonb analysis_result "AI response"
+        timestamptz created_at
+    }
+
+    PAYMENTS {
+        uuid id PK
+        uuid user_id FK
+        text stripe_session_id UK
+        text stripe_payment_intent
+        text status "pending | succeeded | failed"
+        integer amount "cents"
+        text currency "usd"
+        timestamptz created_at
+    }
