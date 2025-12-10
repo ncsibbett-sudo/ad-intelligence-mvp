@@ -260,6 +260,13 @@ export default function AnalyzePage({ params }: { params: Promise<{ id: string }
                     </div>
                   )}
 
+                  {analysis.analysis_result.target_audience && (
+                    <div>
+                      <h3 className="text-sm font-semibold text-gray-700 mb-2">Target Audience</h3>
+                      <p className="text-gray-900">{analysis.analysis_result.target_audience}</p>
+                    </div>
+                  )}
+
                   {analysis.analysis_result.primary_color && (
                     <div>
                       <h3 className="text-sm font-semibold text-gray-700 mb-2">Primary Color</h3>

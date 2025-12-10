@@ -39,6 +39,7 @@ export interface AnalysisResult {
   cta?: string;
   visual_elements?: string[];
   copy_tone?: string;
+  target_audience?: string;
   performance_driver?: string;
   recommendations?: string[];
 }

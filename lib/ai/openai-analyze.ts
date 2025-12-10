@@ -88,17 +88,23 @@ Return a JSON object with the following structure:
   "copy_tone": "The tone of the copy (urgent|promotional|informative|casual|professional)",
   "primary_color": "The dominant color in the creative (if image provided)",
   "visual_elements": ["array", "of", "visual", "elements", "like product, person, text-overlay"],
+  "target_audience": "Detailed description of the specific audience segments this ad is targeting (demographics, psychographics, behaviors, pain points)",
   "performance_driver": "1-2 sentence explanation of what makes this ad effective or what could improve it",
-  "recommendations": ["Array of 3-5 specific, actionable recommendations to improve performance"]
+  "recommendations": ["Array of 3-5 SPECIFIC recommendations based on THIS exact ad content - NOT generic advice. Reference specific words, phrases, or elements from the ad. Include suggestions for target audience refinement."]
 }
 
+CRITICAL INSTRUCTIONS for recommendations:
+- Reference SPECIFIC elements from this ad (e.g., "Change 'Transform Your Life' to..." NOT "Use stronger headlines")
+- Suggest which audience segments to prioritize based on the messaging
+- Be tactical and implementable, not generic
+- Each recommendation must be unique to THIS ad's content
+
 Focus on:
-- What emotional triggers are being used
-- How clear and compelling the messaging is
-- Visual hierarchy and attention-grabbing elements
-- Call-to-action effectiveness
-- Target audience alignment
-- Specific improvements that could increase CTR and conversions
+- Target audience analysis: Who is this ad speaking to? What demographics, interests, behaviors?
+- Emotional triggers specific to this copy
+- Messaging clarity and unique value proposition
+- CTA effectiveness for the target audience
+- Specific word choices, phrasing, or claims that could be optimized
 `;
 
   return prompt;
@@ -114,6 +120,7 @@ function structureAnalysis(rawAnalysis: any): AnalysisResult {
     visual_elements: Array.isArray(rawAnalysis.visual_elements)
       ? rawAnalysis.visual_elements
       : [],
+    target_audience: rawAnalysis.target_audience || 'Target audience analysis not available',
     performance_driver: rawAnalysis.performance_driver || 'Analysis completed',
     recommendations: Array.isArray(rawAnalysis.recommendations)
       ? rawAnalysis.recommendations
