@@ -43,7 +43,9 @@ export const APP_ROUTES = {
   SIGNUP: '/auth/signup',
   DASHBOARD: '/dashboard',
   DASHBOARD_IMPORT: '/dashboard/import',
+  DASHBOARD_IMPORT_COMPETITOR: '/dashboard/import/competitor',
   DASHBOARD_ANALYZE: (id: string) => `/dashboard/analyze/${id}`,
+  DASHBOARD_GENERATE: '/dashboard/generate',
 } as const;
 
 // Error Messages

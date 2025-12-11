@@ -6,7 +6,7 @@ import { use, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase/client';
 import { Creative, Analysis } from '@/lib/types';
-import { ArrowLeft, Loader2, Check, AlertCircle } from 'lucide-react';
+import { ArrowLeft, Loader2, Check, AlertCircle, Users } from 'lucide-react';
 import Link from 'next/link';
 
 export default function AnalyzePage({ params }: { params: Promise<{ id: string }> }) {
@@ -236,6 +236,25 @@ export default function AnalyzePage({ params }: { params: Promise<{ id: string }
                     <span className="font-medium">Analysis Complete</span>
                   </div>
 
+                  {/* Target Audience - Prominent Display */}
+                  {analysis.analysis_result.target_audience && (
+                    <div className="bg-gradient-to-br from-purple-50 to-blue-50 rounded-xl p-6 border-2 border-purple-200 shadow-sm">
+                      <div className="flex items-start gap-4">
+                        <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-blue-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-md">
+                          <Users className="w-6 h-6 text-white" />
+                        </div>
+                        <div className="flex-1">
+                          <h3 className="text-sm font-bold text-purple-900 mb-1 uppercase tracking-wide">
+                            Target Audience
+                          </h3>
+                          <p className="text-gray-900 text-lg font-medium leading-relaxed">
+                            {analysis.analysis_result.target_audience}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
                   {analysis.analysis_result.headline && (
                     <div>
                       <h3 className="text-sm font-semibold text-gray-700 mb-2">Headline</h3>
@@ -257,13 +276,6 @@ export default function AnalyzePage({ params }: { params: Promise<{ id: string }
                     <div>
                       <h3 className="text-sm font-semibold text-gray-700 mb-2">Copy Tone</h3>
                       <p className="text-gray-900 capitalize">{analysis.analysis_result.copy_tone}</p>
-                    </div>
-                  )}
-
-                  {analysis.analysis_result.target_audience && (
-                    <div>
-                      <h3 className="text-sm font-semibold text-gray-700 mb-2">Target Audience</h3>
-                      <p className="text-gray-900">{analysis.analysis_result.target_audience}</p>
                     </div>
                   )}
 

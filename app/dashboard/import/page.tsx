@@ -124,7 +124,6 @@ function ImportPageContent() {
     setImporting(true);
 
     const formData = new FormData(e.currentTarget);
-    const brandName = formData.get('brandName') as string;
     const adCopy = formData.get('adCopy') as string;
     const imageUrl = formData.get('imageUrl') as string;
     const cta = formData.get('cta') as string;
@@ -142,10 +141,10 @@ function ImportPageContent() {
         .insert({
           user_id: user.id,
           source_type: 'own',
-          brand_name: brandName,
+          brand_name: null,
           ad_copy: adCopy,
-          ad_image_url: imageUrl,
-          cta: cta,
+          ad_image_url: imageUrl || null,
+          cta: cta || null,
           performance: {},
         })
         .select()
@@ -273,33 +272,85 @@ function ImportPageContent() {
 
             <form onSubmit={handleManualImport} className="space-y-6">
               <div>
-                <label htmlFor="brandName" className="block text-sm font-medium text-gray-700 mb-2">
-                  Brand Name
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Ad Image (Optional)
                 </label>
+                <div
+                  onDragOver={(e) => {
+                    e.preventDefault();
+                    e.currentTarget.classList.add('border-blue-500', 'bg-blue-50');
+                  }}
+                  onDragLeave={(e) => {
+                    e.currentTarget.classList.remove('border-blue-500', 'bg-blue-50');
+                  }}
+                  onDrop={async (e) => {
+                    e.preventDefault();
+                    e.currentTarget.classList.remove('border-blue-500', 'bg-blue-50');
+                    const file = e.dataTransfer.files[0];
+                    if (file && file.type.startsWith('image/')) {
+                      const reader = new FileReader();
+                      reader.onload = (event) => {
+                        const imageUrlInput = document.getElementById('imageUrl') as HTMLInputElement;
+                        if (imageUrlInput && event.target?.result) {
+                          imageUrlInput.value = event.target.result as string;
+                          // Trigger preview update
+                          const img = document.getElementById('imagePreview') as HTMLImageElement;
+                          if (img) {
+                            img.src = event.target.result as string;
+                            img.style.display = 'block';
+                          }
+                        }
+                      };
+                      reader.readAsDataURL(file);
+                    }
+                  }}
+                  className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-blue-400 transition-colors cursor-pointer"
+                  onClick={() => document.getElementById('imageFileInput')?.click()}
+                >
+                  <Upload className="w-12 h-12 text-gray-400 mx-auto mb-3" />
+                  <p className="text-sm font-medium text-gray-700 mb-1">
+                    Drag and drop your ad image here
+                  </p>
+                  <p className="text-xs text-gray-500 mb-2">
+                    or click to browse
+                  </p>
+                  <p className="text-xs text-gray-400">
+                    PNG, JPG, GIF up to 10MB
+                  </p>
+                </div>
                 <input
-                  type="text"
-                  id="brandName"
-                  name="brandName"
-                  required
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="Your brand name"
+                  type="file"
+                  id="imageFileInput"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      const reader = new FileReader();
+                      reader.onload = (event) => {
+                        const imageUrlInput = document.getElementById('imageUrl') as HTMLInputElement;
+                        if (imageUrlInput && event.target?.result) {
+                          imageUrlInput.value = event.target.result as string;
+                          // Trigger preview update
+                          const img = document.getElementById('imagePreview') as HTMLImageElement;
+                          if (img) {
+                            img.src = event.target.result as string;
+                            img.style.display = 'block';
+                          }
+                        }
+                      };
+                      reader.readAsDataURL(file);
+                    }
+                  }}
                 />
-              </div>
-
-              <div>
-                <label htmlFor="imageUrl" className="block text-sm font-medium text-gray-700 mb-2">
-                  Image URL
-                </label>
-                <input
-                  type="url"
-                  id="imageUrl"
-                  name="imageUrl"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="https://example.com/ad-image.jpg"
+                {/* Hidden input to store the data URL */}
+                <input type="hidden" id="imageUrl" name="imageUrl" />
+                {/* Image Preview */}
+                <img
+                  id="imagePreview"
+                  alt="Preview"
+                  className="mt-4 max-h-64 rounded-lg mx-auto border border-gray-200 hidden"
                 />
-                <p className="mt-1 text-xs text-gray-500">
-                  Optional: URL to your ad creative image
-                </p>
               </div>
 
               <div>
