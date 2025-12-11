@@ -1,6 +1,6 @@
 # Architecture Diagrams - Export Ready
 
-This directory contains all architecture diagrams from `ARCHITECTURE_DIAGRAM.md` converted to visual formats (PNG) that can be easily exported, shared, and printed.
+This directory contains all architecture diagrams from `../docs/architecture/ARCHITECTURE_DIAGRAM.md` converted to visual formats (PNG) that can be easily exported, shared, and printed.
 
 ## 📁 Contents
 
@@ -118,7 +118,7 @@ npx mmdc -i [input.mmd] -o [output.png] -b transparent -w [width] -H [height]
 ## 📝 Notes
 
 - All diagrams maintain their original styling from the source Mermaid code
-- Colors are consistent with the original ARCHITECTURE_DIAGRAM.md
+- Colors are consistent with the original ../docs/architecture/ARCHITECTURE_DIAGRAM.md
 - HTML viewer is fully responsive and mobile-friendly
 - Print styles are optimized for PDF export (page breaks, etc.)
 
@@ -145,5 +145,5 @@ If you need to modify or regenerate these diagrams, refer to the Mermaid documen
 ---
 
 **Generated**: 2025-11-21
-**Source**: ARCHITECTURE_DIAGRAM.md
+**Source**: ../docs/architecture/ARCHITECTURE_DIAGRAM.md
 **Tool**: Mermaid CLI v11.x

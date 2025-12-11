@@ -361,6 +361,18 @@ export default function DashboardPage() {
                 <p className="text-sm text-gray-600">Connect Google Ads or add manually</p>
               </div>
             </Link>
+            <Link
+              href="/dashboard/import/competitor"
+              className="flex items-center gap-3 p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-orange-500 hover:bg-orange-50 transition-all group"
+            >
+              <div className="p-2 bg-orange-100 rounded-lg group-hover:bg-orange-200 transition-colors">
+                <Eye className="w-6 h-6 text-orange-600" />
+              </div>
+              <div>
+                <h3 className="font-medium text-gray-900">Import Competitor Ads</h3>
+                <p className="text-sm text-gray-600">Analyze competitor creatives manually</p>
+              </div>
+            </Link>
             {selectedCreatives.length >= 2 ? (
               <button
                 onClick={handleCompare}
@@ -385,18 +397,6 @@ export default function DashboardPage() {
                 </div>
               </div>
             )}
-            <Link
-              href="/dashboard/import/competitor"
-              className="flex items-center gap-3 p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-orange-500 hover:bg-orange-50 transition-all group"
-            >
-              <div className="p-2 bg-orange-100 rounded-lg group-hover:bg-orange-200 transition-colors">
-                <Eye className="w-6 h-6 text-orange-600" />
-              </div>
-              <div>
-                <h3 className="font-medium text-gray-900">Import Competitor Ads</h3>
-                <p className="text-sm text-gray-600">Analyze competitor creatives manually</p>
-              </div>
-            </Link>
           </div>
         </div>
 
